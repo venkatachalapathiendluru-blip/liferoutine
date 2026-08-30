@@ -2,7 +2,7 @@
 
 A personal daily-health web app that helps you plan meals, track water intake, and
 review end-of-day summaries. The product front-end is served by **Django 5 + SQLite**
-(no separate static server), with the Python health engines alongside for tests.
+(no separate static server).
 
 ---
 
@@ -41,7 +41,6 @@ Data is stored in your browser's `localStorage` — no account or server needed.
 - **Server & routing:** Django 5.2 serving the pages as templates.
 - **Storage:** Browser `localStorage` (app data) + SQLite (Django).
 - **Static files:** django staticfiles + Whitenoise for production.
-- **Python engines:** `routine_engine.py`, `daily_summary_engine.py`, `water_demo.py` (stdlib-only).
 - **Deployment:** Render / Railway / any WSGI host (see `docs/DEPLOYMENT.md`).
 
 ---
@@ -57,24 +56,13 @@ liferoutine/
 │   ├── DEPLOYMENT.md
 │   └── TEAM_WORKFLOW.md
 │
-├── routine_engine.py       # Daily timeline generation (Python)
-├── daily_summary_engine.py # Daily summary scoring (Python)
-├── water_demo.py           # Water scheduling algorithm demo (standalone)
-├── test_timeline.py        # Timeline engine test
-├── test_water_engine.py    # Water engine test
-│
-└── liferoutine360/         # Django project (product + backend experiments)
+└── liferoutine360/         # Django project (product + accounts)
     ├── manage.py
     ├── liferoutine360/     # settings.py, urls.py, wsgi.py ...
     ├── web/                # Product pages (views, urls, tests)
-    ├── templates/web/      # meal planner / summary / water / food-admin
-    ├── static/web/         # the app's JS + CSS
     ├── accounts/           # login/register/profile app
-    ├── planning/           # experimental backend app (timelines)
-    ├── nutrition/          # experimental backend app
-    ├── water/              # experimental backend app (DB water engine)
-    ├── payments/           # experimental backend app
-    └── core/               # experimental dashboard app
+    ├── templates/          # base.html + web/ + accounts/ templates
+    └── static/web/         # the app's JS + CSS
 ```
 
 ---
@@ -126,9 +114,8 @@ Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/) and use the navbar:
 | `http://127.0.0.1:8000/food-admin/` | Food Admin |
 | `http://127.0.0.1:8000/admin/` | Django admin (login required) |
 
-> The app's data lives in `localStorage`; Django only serves the pages, so you don't
-> need to touch the database for the product to work. The `accounts/`, `planning/`,
-> `nutrition/`, `water/`, `payments/`, `core/` apps are experimental backend features.
+> The app's product data lives in `localStorage`; Django serves the pages and provides
+> the `accounts/` app (register/login/profile) and Django admin.
 
 ---
 
@@ -141,16 +128,6 @@ See **[docs/TESTING.md](docs/TESTING.md)** for the full guide. Quick start:
 cd liferoutine360
 python3 manage.py check
 python3 manage.py test
-
-# Engine tests (require Django, from the project root)
-cd ..
-python3 test_timeline.py
-python3 test_water_engine.py
-
-# Standalone Python engines (no dependencies)
-python3 routine_engine.py
-python3 daily_summary_engine.py
-python3 water_demo.py
 ```
 
 ---

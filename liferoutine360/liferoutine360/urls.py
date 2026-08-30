@@ -20,12 +20,7 @@ from django.urls import path, include
 urlpatterns = [
     # Product pages (the main front-end, glued into Django)
     path('', include('web.urls')),
-    # Django admin + experimental backend apps
+    # Django admin + accounts
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
-    path('planning/', include('planning.urls')),
-    path('nutrition/', include('nutrition.urls')),
-    path('water/', include('water.urls')),
-    path('payments/', include('payments.urls')),
-    path('', include('core.urls')),
 ]
