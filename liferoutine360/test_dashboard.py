@@ -5,7 +5,6 @@ import django
 
 # Setup Django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'liferoutine360.settings')
-sys.path.append('/home/venkat/liferoutine/liferoutine360')
 django.setup()
 
 from django.test.client import Client

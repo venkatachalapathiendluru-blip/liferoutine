@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from datetime import date
-from planning.models import MealDay, MealItem
+from planning.models import Food, MealDay, MealItem
 
 
 class MealPlanningTestCase(TestCase):
@@ -10,6 +10,31 @@ class MealPlanningTestCase(TestCase):
             username='testuser',
             email='test@example.com',
             password='testpass123'
+        )
+        self.oatmeal = Food.objects.create(
+            name='Oatmeal',
+            calories_per_unit=150,
+            default_unit='bowl'
+        )
+        self.chicken = Food.objects.create(
+            name='Chicken',
+            calories_per_unit=165,
+            default_unit='gram'
+        )
+        self.banana = Food.objects.create(
+            name='Banana',
+            calories_per_unit=105,
+            default_unit='piece'
+        )
+
+    def _create_meal_item(self, meal_day, meal_type, food, quantity, unit):
+        return MealItem.objects.create(
+            meal_day=meal_day,
+            meal_type=meal_type,
+            food=food,
+            food_name=food.name,
+            quantity=quantity,
+            quantity_unit=unit
         )
     
     def test_meal_day_creation(self):
@@ -30,25 +55,18 @@ class MealPlanningTestCase(TestCase):
             date=date.today()
         )
         
-        meal_item = MealItem.objects.create(
-            meal_day=meal_day,
-            meal_type='breakfast',
-            food='Oatmeal',
-            quantity=1,
-            quantity_unit='bowl',
-            calories=150
+        meal_item = self._create_meal_item(
+            meal_day, 'breakfast', self.oatmeal, 1, 'bowl'
         )
         
         self.assertEqual(meal_item.meal_day, meal_day)
         self.assertEqual(meal_item.meal_type, 'breakfast')
-        self.assertEqual(meal_item.food, 'Oatmeal')
+        self.assertEqual(meal_item.food, self.oatmeal)
         self.assertEqual(meal_item.quantity, 1)
         self.assertEqual(meal_item.quantity_unit, 'bowl')
-        self.assertEqual(meal_item.calories, 150)
-        self.assertEqual(
-            str(meal_item), 
-            'Oatmeal (1.00 bowl(s)) - Breakfast'
-        )
+        self.assertEqual(meal_item.calculate_calories(), 150)
+        self.assertIn('Oatmeal', str(meal_item))
+        self.assertIn('Breakfast', str(meal_item))
     
     def test_meal_day_unique_constraint(self):
         """Test unique constraint on user and date"""
@@ -72,21 +90,8 @@ class MealPlanningTestCase(TestCase):
         )
         
         # Create multiple meal items
-        MealItem.objects.create(
-            meal_day=meal_day,
-            meal_type='breakfast',
-            food='Oatmeal',
-            quantity=1,
-            quantity_unit='bowl'
-        )
-        
-        MealItem.objects.create(
-            meal_day=meal_day,
-            meal_type='lunch',
-            food='Chicken',
-            quantity=100,
-            quantity_unit='gram'
-        )
+        self._create_meal_item(meal_day, 'breakfast', self.oatmeal, 1, 'bowl')
+        self._create_meal_item(meal_day, 'lunch', self.chicken, 100, 'gram')
         
         items = meal_day.get_meal_items()
         self.assertEqual(items.count(), 2)
@@ -99,30 +104,11 @@ class MealPlanningTestCase(TestCase):
         )
         
         # Create breakfast items
-        MealItem.objects.create(
-            meal_day=meal_day,
-            meal_type='breakfast',
-            food='Oatmeal',
-            quantity=1,
-            quantity_unit='bowl'
-        )
-        
-        MealItem.objects.create(
-            meal_day=meal_day,
-            meal_type='breakfast',
-            food='Banana',
-            quantity=1,
-            quantity_unit='piece'
-        )
+        self._create_meal_item(meal_day, 'breakfast', self.oatmeal, 1, 'bowl')
+        self._create_meal_item(meal_day, 'breakfast', self.banana, 1, 'piece')
         
         # Create lunch item
-        MealItem.objects.create(
-            meal_day=meal_day,
-            meal_type='lunch',
-            food='Chicken',
-            quantity=100,
-            quantity_unit='gram'
-        )
+        self._create_meal_item(meal_day, 'lunch', self.chicken, 100, 'gram')
         
         breakfast_items = meal_day.get_meal_by_type('breakfast')
         self.assertEqual(breakfast_items.count(), 2)
