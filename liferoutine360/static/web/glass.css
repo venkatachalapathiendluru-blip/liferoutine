@@ -1004,7 +1004,7 @@ input[type="checkbox"] { accent-color: var(--accent); }
 #foodIngredients [style*="color"] { color: var(--txt-faint) !important; }
 
 /* ==========================================================================
-   Bootstrap dark compatibility (experimental pages: core/water/planning/etc)
+   Bootstrap dark compatibility
    ========================================================================== */
 .card {
   background: var(--glass) !important;

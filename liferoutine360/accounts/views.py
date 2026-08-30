@@ -15,7 +15,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Welcome back, {username}!')
-                return redirect('core:dashboard')
+                return redirect('web:meal_planner')
             else:
                 messages.error(request, 'Invalid username or password.')
         else:
@@ -44,7 +44,7 @@ def register_view(request):
             # Profile will be created automatically via signal
             messages.success(request, f'Account created successfully for {first_name}! Welcome to LifeRoutine 360.')
             login(request, user)
-            return redirect('core:dashboard')
+            return redirect('web:meal_planner')
         else:
             # Add form errors as messages
             if form.errors:
@@ -65,7 +65,7 @@ def profile_view(request):
         profile = request.user.profile
     except:
         messages.error(request, 'Profile not found. Please contact support.')
-        return redirect('core:dashboard')
+        return redirect('web:meal_planner')
     
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=profile)

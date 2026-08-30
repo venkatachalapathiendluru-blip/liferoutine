@@ -3,14 +3,12 @@
 ## Overview
 
 LifeRoutine 360 is a single Django project. Django serves the product front-end as
-templates/static assets, and also hosts experimental backend apps (accounts, planning,
-nutrition, water, payments, core).
+templates/static assets and provides the `accounts` app.
 
 - **Product layer** (what users see): the four pages in the `web` app.
 - **App data layer**: lives entirely in the browser's `localStorage` (meals, foods,
   water) — Django only delivers the page + assets.
-- **Experimental layer**: `accounts`, `planning`, `nutrition`, `water`, `payments`,
-  `core` — work-in-progress server-side features.
+- **Account layer**: the `accounts` app (register/login/profile) on top of Django auth.
 
 ## 1. Product layer (`web` app)
 
@@ -25,8 +23,7 @@ nutrition, water, payments, core).
 | `/admin/` | Django admin (login required) | — |
 
 The `web.urls` include comes **first** in the project `urlpatterns`, so the product
-pages own the clean routes; the experimental apps' sub-paths (e.g. `/water/track/`,
-`/accounts/login/`) still resolve by falling through to their own includes.
+pages own the clean routes; `/accounts/login/` still resolves to the accounts app.
 
 ### Page → logic mapping
 
@@ -71,27 +68,14 @@ FoodManager (catalog, localStorage 'foodManagerData')
 - Demo-only client-side role/module system (`authManager`). Not linked from any page.
 - **Warning:** `hashPassword` uses base64 — it is not real security.
 
-## 2. Python engines (inside the Django project)
-
-Stdlib-only modules shipped within `liferoutine360/`:
-
-| Module | Responsibility |
-|--------|----------------|
-| `liferoutine360/routine_engine.py` | Builds a daily timeline (wake/water/walk/meals/sleep) from a wake-up time; personalises descriptions by health plan + veg preference. Used by the `planning` app. |
-| `liferoutine360/water/engine.py` | DB-backed `WaterIntakeEngine` (`WaterGoal`, `WaterSchedule`, `WaterTimeSlot` models). |
-
-## 3. Django layer (`liferoutine360/`)
+## 2. Django layer (`liferoutine360/`)
 
 - Standard Django 5.2 layout: `manage.py`, `liferoutine360/settings.py`, SQLite DB.
-- Apps: `web` (product) + `accounts`, `planning`, `nutrition`, `water`, `payments`,
-  `core` (experimental).
-- `water/engine.py` holds the DB-backed `WaterIntakeEngine`
-  (`WaterGoal`, `WaterSchedule`, `WaterTimeSlot` models).
-- `planning` defines `Timeline` (used to derive wake-up and meal times).
+- Apps: `web` (product pages) + `accounts` (register/login/profile).
 - Static: `STATICFILES_DIRS` points at `static/` (dev), `STATIC_ROOT` at
   `staticfiles/` (built by `collectstatic`, served by Whitenoise).
 
-## 4. Data flows
+## 3. Data flows
 
 ```
 Browser UI  ──►  FoodManager / MealPlanner / WaterIntakeManager
@@ -103,7 +87,7 @@ Browser UI  ──►  FoodManager / MealPlanner / WaterIntakeManager
 No first-party network calls happen at runtime (Bootstrap/Icons load from CDN at page
 load).
 
-## 5. Deployment topology
+## 4. Deployment topology
 
 ```
 git push (GitHub) ──► Render / Railway

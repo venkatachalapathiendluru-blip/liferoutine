@@ -42,11 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'web',
     'accounts',
-    'planning',
-    'nutrition',
-    'water',
-    'payments',
-    'core',
 ]
 
 MIDDLEWARE = [
