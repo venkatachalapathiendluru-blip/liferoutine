@@ -1,7 +1,7 @@
 # Testing Guide
 
 This guide explains how to test every part of the project: the Django routes, the
-standalone Python engines, and manual browser checks.
+product features, and manual browser checks.
 
 ## 1. Prerequisites
 
@@ -21,7 +21,7 @@ pip install -r requirements.txt
 cd liferoutine/liferoutine360
 python3 manage.py check               # "System check identified no issues (0 silenced)."
 python3 manage.py check --deploy      # flags deployment-safety issues (debug/secret/hosts)
-python3 manage.py test                # Django test suites (web/accounts/planning/nutrition/water/payments/core)
+python3 manage.py test                # Django test suites (web/accounts)
 ```
 
 The `web` suite tests that every product page returns 200:
@@ -63,16 +63,15 @@ Expected output:
 Also confirm static assets load: `curl -s -o /dev/null -w "%{http_code}\n"
 http://127.0.0.1:8000/static/web/script.js` → `200`.
 
-## 4. Engine & app tests
+## 4. Tests
 
 ```bash
 cd liferoutine
-python3 manage.py test   # runs all app tests (web, accounts, planning, nutrition, water, payments, core)
+python3 manage.py test   # runs the web and accounts app tests
 ```
 
-The Django project's app tests live in each app's `tests.py` (e.g.
-`liferoutine360/water/tests.py` for the DB-backed water engine) plus
-`liferoutine360/test_dashboard.py` as a manual admin-dashboard script.
+The Django project's tests live in each app's `tests.py`
+(`liferoutine360/web/tests.py` and `liferoutine360/accounts/tests.py`).
 
 ## 5. Manual browser checklist
 
