@@ -71,18 +71,14 @@ FoodManager (catalog, localStorage 'foodManagerData')
 - Demo-only client-side role/module system (`authManager`). Not linked from any page.
 - **Warning:** `hashPassword` uses base64 — it is not real security.
 
-## 2. Python engines (shared logic, portable to backend)
+## 2. Python engines (inside the Django project)
 
-Standalone, stdlib-only modules:
+Stdlib-only modules shipped within `liferoutine360/`:
 
 | Module | Responsibility |
 |--------|----------------|
-| `routine_engine.py` | Builds a daily timeline (wake/water/walk/meals/sleep) from a wake-up time; personalises descriptions by health plan + veg preference. |
-| `daily_summary_engine.py` | Scores a day (tasks 40% / water 30% / calories 30%), generates a message + recommendations, weekly trend analysis. |
-| `water_demo.py` | Pure-python reference algorithm: splits a water target into 8–10 slots that avoid ±30 min around meals. |
-
-Tests for the engines (`test_timeline.py`, `test_water_engine.py`) import the Django
-project for DB-backed pieces, driven by `django.setup()`.
+| `liferoutine360/routine_engine.py` | Builds a daily timeline (wake/water/walk/meals/sleep) from a wake-up time; personalises descriptions by health plan + veg preference. Used by the `planning` app. |
+| `liferoutine360/water/engine.py` | DB-backed `WaterIntakeEngine` (`WaterGoal`, `WaterSchedule`, `WaterTimeSlot` models). |
 
 ## 3. Django layer (`liferoutine360/`)
 
