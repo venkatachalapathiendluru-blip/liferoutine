@@ -1,13 +1,11 @@
-# Python dependencies for the LifeRoutine 360 backend (optional).
-# The main static site (index.html / summary.html / admin.html / water-tracker.html)
-# has NO dependencies - it runs in the browser with a simple static file server.
+# Python dependencies for the LifeRoutine 360 Django project.
 #
 # Python version: 3.10+ (recommended: 3.10 - 3.13)
 #
 # Install with:  pip install -r requirements.txt
-#   or inside a virtual environment:  python -m venv .venv && source .venv/bin/activate
+#   inside a virtual environment:  python -m venv .venv && source .venv/bin/activate
+#
+# SQLite (used locally) ships with Python - no extra package needed.
 
 Django==5.2.10
-
-# SQLite (used by the Django backend) ships with Python - no extra package needed.
-# No other third-party libraries are required for the engines or the test scripts.
+whitenoise==6.8.2

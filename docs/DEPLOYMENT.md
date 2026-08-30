@@ -1,136 +1,96 @@
 # Deployment Guide (Production)
 
-The product you ship is the **static site** (the HTML/CSS/JS in the project root).
-The Django app in `liferoutine360/` is an optional experimental backend and is
-**excluded from this deployment** (both from Vercel via `.vercelignore` and from git
-via `.gitignore`'s `db.sqlite3`).
+LifeRoutine 360 is a **Django 5.2 + SQLite** app that also serves the product
+front-end. The app data lives in `localStorage` on the browser, so the deploy is a
+plain Django/WSGI deployment — no CDN, no separate static server.
 
-Recommended hosting: **Vercel** — it is free, needs zero configuration, and this
-project already includes `vercel.json`.
-
----
-
-## 1. Deploy to Vercel (recommended)
-
-### 1.1 One-time setup
-
-```bash
-npm i -g vercel        # installs the Vercel CLI globally
-vercel login           # opens a browser to authenticate
-```
-
-### 1.2 Deploy (first time)
-
-From the project root:
-
-```bash
-cd liferoutine
-vercel --prod
-```
-
-The CLI detects the static site (via `vercel.json`), uploads it, and returns a URL,
-e.g.:
-
-```
-https://liferoutine.vercel.app
-```
-
-This is your **production URL** — share it with anyone. There is no browser
-interaction needed if you're already logged in.
-
-### 1.3 Subsequent deploys (and previews)
-
-```bash
-vercel              # deploy a preview + production alias in one command
-vercel --prod       # directly to production
-vercel --prod --yes # skip prompts (CI-friendly)
-```
-
-Every non-`--prod` deploy creates a unique **preview URL** — great for showing
-teammates a change before it goes live.
-
-### 1.4 What `vercel.json` does
-
-```json
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [
-    { "source": "/summary", "destination": "/summary.html" },
-    { "source": "/admin",   "destination": "/admin.html" },
-    { "source": "/water",   "destination": "/water-tracker.html" }
-  ]
-}
-```
-
-It maps the pretty routes `/summary`, `/admin`, `/water` to their files, matching the
-behaviour of the local `server.py`.
-
-### 1.5 What is NOT deployed
-
-`.vercelignore` excludes from every deploy:
-
-- the `liferoutine360` Django app (and all `*.py`)
-- `*.md` documentation
-- secrets: `cookies.txt`, `csrf.txt`, `.env`
-
-If you ever *do* plan to ship secrets to Vercel, set them as
-[environment variables](https://vercel.com/docs/projects/environment-variables) in
-the project settings — never in the repo.
-
-### 1.6 Custom domain (optional)
-
-In the Vercel dashboard → your project → **Settings → Domains**, add `www.yourdomain.com`.
-Your DNS provider (or Vercel's nameservers) then point the domain at the deployment.
+Recommended hosts: **Render** or **Railway** (both have free tiers that run Django
+with Gunicorn + Whitenoise).
 
 ---
 
-## 2. Alternative: static hosting anywhere
+## 1. What runs in production
 
-Because the site is 100% static, it also deploys to:
-- **GitHub Pages** (Settings → Pages → select `main` branch) — free, public.
-- **Netlify** (drag-and-drop the project folder).
-- Any web server that serves static files (Apache, Nginx, cPanel).
-
-For these, the `/summary`, `/admin`, `/water` pretty routes won't work without extra
-config; use the `.html` filenames directly instead.
+- **App server:** Gunicorn running `liferoutine360.wsgi`.
+- **Static files:** served by WhiteNoise from `staticfiles/` (built by
+  `collectstatic`). No extra CDN needed.
+- **Routes:** `/` (Meal Planner), `/summary/`, `/water/`, `/food-admin/` are product
+  pages. `/admin/` is the Django admin.
+- **Database:** SQLite by default. Fine for small traffic; switch to Postgres via
+  `DJANGO_DATABASE_URL` if you need concurrency (see section 4).
 
 ---
 
-## 3. Deploying the Django backend (only if you need it live)
+## 2. Environment variables
 
-The Django app is **not production-configured**:
+| Variable | Required | Example |
+|----------|----------|---------|
+| `DJANGO_SECRET_KEY` | Yes (prod) | `a-long-random-string` |
+| `DJANGO_DEBUG` | Yes (prod) | `False` |
+| `DJANGO_ALLOWED_HOSTS` | Yes (prod) | `liferoutine.onrender.com,www.example.com` |
 
-- `settings.py` has `DEBUG = True` and a hard-coded `SECRET_KEY` — never expose this.
-- SQLite is built for local dev, not concurrent web traffic.
+`settings.py` reads these at startup; without them it falls back to insecure local
+defaults (safe for development only). Never paste the real secret into the repo.
 
-If the backend must run in production:
+---
 
-```bash
-# safety first: set env-driven settings (do NOT hard-code secrets)
-export DEBUG=0
-export SECRET_KEY='a-long-random-string'
-export DJANGO_ALLOWED_HOSTS='yourdomain.com'
+## 3. Deploy to Render (recommended)
 
-cd liferoutine/liferoutine360
-python3 manage.py collectstatic
+### 3.1 One-time setup
+
+1. Push the repo to GitHub (already done).
+2. On [render.com](https://render.com) → **New → Web Service** → connect the
+   `liferoutine` repo.
+3. Fill in the service settings:
+
+| Field | Value |
+|-------|-------|
+| Name | `liferoutine` |
+| Environment | `Python 3` |
+| Build Command | `pip install -r requirements.txt && python3 manage.py collectstatic --noinput && python3 manage.py migrate` |
+| Start Command | `gunicorn liferoutine360.wsgi` |
+| Instance Type | Free |
+
+4. In **Environment**, add:
+   - `DJANGO_SECRET_KEY` — generate one, e.g. `python3 -c "import secrets; print(secrets.token_urlsafe(50))"`
+   - `DJANGO_DEBUG` = `False`
+   - `DJANGO_ALLOWED_HOSTS` = your `*.onrender.com` URL (added automatically after first deploy)
+
+### 3.2 Deploy
+
+Render auto-deploys on every push to `main`. You get a live URL like:
+
+```
+https://liferoutine.onrender.com
 ```
 
-Deploy options:
-- **Render / Railway / Fly.io**: push the `liferoutine360/` folder, run
-  `pip install -r requirements.txt && python3 manage.py migrate && gunicorn liferoutine360.wsgi`.
-- **AWS/VPS**: run behind Nginx/Gunicorn with HTTPS.
+### 3.3 Re-deploying after changes
 
-These options need CI config + a real database tweak (`settings.py` → Postgres). This
-is out of scope for the current product — the static deploy covers the user-facing app.
+Just `git push origin main` — Render rebuilds and releases.
 
 ---
 
 ## 4. Production checklist
 
-- [ ] `vercel --prod` returns a live HTTPS URL.
-- [ ] `/`, `/summary`, `/water`, `/admin` all load (200) on the live URL.
-- [ ] No `cookies.txt` / `csrf.txt` / `.env` / `db.sqlite3` inside the bundle
-      (run `vercel build` then inspect `.vercel/output` if unsure).
-- [ ] Browser `localStorage` works on the live domain.
+- [ ] `DJANGO_DEBUG` is `False` and a real `DJANGO_SECRET_KEY` is set.
+- [ ] `DJANGO_ALLOWED_HOSTS` includes the live domain.
+- [ ] `/`, `/summary/`, `/water/`, `/food-admin/` all load (200) on the live URL.
+- [ ] Static assets load (browser console shows no 404s for `/static/web/...`).
+- [ ] No `cookies.txt` / `csrf.txt` / `.env` / `db.sqlite3` / `staticfiles/` were
+      committed (check `git log --stat` / `.gitignore`).
 - [ ] A teammate clones from GitHub and can run + deploy independently (see
       `docs/TEAM_WORKFLOW.md`).
+
+> Switching to Postgres (optional): set a `DJANGO_DATABASE_URL`-style variable and
+> adjust `settings.py` to read it (e.g. with `dj-database-url`). For the current
+> product the database is unused by the front-end, so SQLite is acceptable.
+
+---
+
+## 5. Local production check (before pushing)
+
+```bash
+cd liferoutine360
+python3 manage.py check --deploy   # flags insecure settings worth fixing
+python3 manage.py test
+```

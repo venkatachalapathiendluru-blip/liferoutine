@@ -1,0 +1,158 @@
+{% extends 'web/base.html' %}
+{% load static %}
+
+{% block title %}Water Intake Tracker | LifeRoutine 360{% endblock %}
+
+{% block content %}
+<div class="reveal">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+        <div>
+            <h1 class="section-title">
+                <i class="bi bi-droplet-fill text-sky-300 me-2"></i>Water Intake Tracker
+            </h1>
+            <p class="section-subtitle">Schedule water intake and log your consumption through the day.</p>
+        </div>
+    </div>
+
+    <div class="g-card reveal reveal-1 mb-6">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:items-end">
+            <div>
+                <label for="wakeUpTime" class="g-label">Wake Up Time</label>
+                <input type="time" id="wakeUpTime" value="06:00" class="g-input">
+            </div>
+            <div>
+                <label for="dailyTarget" class="g-label">Daily Target</label>
+                <select id="dailyTarget" class="g-select">
+                    <option value="2L">2 Liters</option>
+                    <option value="2.5L" selected>2.5 Liters</option>
+                    <option value="3L">3 Liters</option>
+                </select>
+            </div>
+            <div>
+                <label for="selectedDate" class="g-label">Date</label>
+                <input type="date" id="selectedDate" class="g-input">
+            </div>
+            <div>
+                <button id="generateScheduleBtn" class="g-btn g-btn-solid w-full">
+                    <i class="bi bi-calendar-week me-1"></i>Generate Schedule
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-5 mb-6">
+        <div class="g-card reveal reveal-1 lg:col-span-2">
+            <h3 class="g-card-title">
+                <i class="bi bi-graph-up-arrow text-emerald-300 me-2"></i>Today's Progress
+            </h3>
+            <div class="grid grid-cols-3 gap-3 text-center mb-4">
+                <div class="stat-item">
+                    <div class="text-xs uppercase tracking-wider text-slate-500 mb-1">Target</div>
+                    <div class="text-xl font-bold text-sky-300" id="targetAmount">0 ml</div>
+                </div>
+                <div class="stat-item">
+                    <div class="text-xs uppercase tracking-wider text-slate-500 mb-1">Consumed</div>
+                    <div class="text-xl font-bold text-emerald-300" id="consumedAmount">0 ml</div>
+                </div>
+                <div class="stat-item">
+                    <div class="text-xs uppercase tracking-wider text-slate-500 mb-1">Remaining</div>
+                    <div class="text-xl font-bold text-amber-300" id="remainingAmount">0 ml</div>
+                </div>
+            </div>
+            <div class="progress mb-1" style="height: 22px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                     id="progressBar"
+                     role="progressbar"
+                     style="width: 0%">
+                    <span id="progressPercentage">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="g-card reveal reveal-2">
+            <h3 class="g-card-title">
+                <i class="bi bi-lightbulb text-amber-300 me-2"></i>Next Recommendations
+            </h3>
+            <div id="recommendationsList">
+                <p class="no-recommendations">No current recommendations</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="g-card reveal reveal-2 mb-6">
+        <h3 class="g-card-title">
+            <i class="bi bi-clock-history text-sky-300 me-2"></i>Water Schedule
+        </h3>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4" id="scheduleGrid">
+            <div class="col-span-full text-center text-slate-400 py-6">
+                <i class="bi bi-calendar-week display-4 d-block mx-auto mb-3 text-slate-600"></i>
+                <p class="mb-0">Generate a schedule to see your water intake plan</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="g-card reveal reveal-3">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <h3 class="g-card-title mb-0">
+                <i class="bi bi-plus-circle text-sky-300 me-2"></i>Quick Add Water
+            </h3>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <button class="g-btn g-btn-ghost w-full water-btn" data-amount="250">
+                <i class="bi bi-cup-straw me-1"></i>250ml
+            </button>
+            <button class="g-btn g-btn-ghost w-full water-btn" data-amount="500">
+                <i class="bi bi-cup-straw-fill me-1"></i>500ml
+            </button>
+            <button class="g-btn g-btn-ghost w-full water-btn" data-amount="100">
+                <i class="bi bi-droplet me-1"></i>100ml
+            </button>
+            <button class="g-btn g-btn-ghost w-full water-btn" data-amount="custom">
+                <i class="bi bi-gear me-1"></i>Custom
+            </button>
+        </div>
+        <div class="flex gap-3 mt-4" id="customAmount" style="display: none;">
+            <input type="number"
+                   id="customAmountInput"
+                   class="g-input flex-1"
+                   placeholder="Enter amount (ml)"
+                   min="1"
+                   max="1000">
+            <button id="addCustomAmount" class="g-btn g-btn-solid">
+                <i class="bi bi-plus-lg me-1"></i>Add
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="waterSlotModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">
+                <i class="bi bi-droplet-fill text-sky-300 me-2"></i>Water Intake
+            </h3>
+            <button class="close" aria-label="Close">&times;</button>
+        </div>
+        <div class="slot-details mb-3">
+            <p class="mb-2"><strong>Time:</strong> <span id="modalTime"></span></p>
+            <p class="mb-2"><strong>Planned:</strong> <span id="modalPlanned"></span></p>
+            <p class="mb-0"><strong>Consumed:</strong> <span id="modalConsumed"></span></p>
+        </div>
+        <div class="amount-input">
+            <label for="modalAmount" class="g-label">Amount to consume (ml):</label>
+            <input type="number" id="modalAmount" class="g-input w-full" min="1" max="1000" value="250">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="g-btn g-btn-ghost cancel-btn">Cancel</button>
+            <button type="button" id="consumeWaterBtn" class="g-btn g-btn-solid">
+                <i class="bi bi-check-lg me-1"></i>Consume
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'web/water-intake.js' %}"></script>
+    <script src="{% static 'web/water-tracker.js' %}"></script>
+{% endblock %}

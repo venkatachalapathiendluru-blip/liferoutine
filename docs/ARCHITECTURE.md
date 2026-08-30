@@ -2,14 +2,31 @@
 
 ## Overview
 
-LifeRoutine 360 has two independent layers:
+LifeRoutine 360 is a single Django project. Django serves the product front-end as
+templates/static assets, and also hosts experimental backend apps (accounts, planning,
+nutrition, water, payments, core).
 
-1. **Static web app (production)** — the files in the project root. Runs entirely in
-   the browser, persisted with `localStorage`. Deployed to Vercel.
-2. **Django backend (optional/experimental)** — the `liferoutine360/` folder. A model
-   for future per-user accounts and server-side data. Not deployed.
+- **Product layer** (what users see): the four pages in the `web` app.
+- **App data layer**: lives entirely in the browser's `localStorage` (meals, foods,
+  water) — Django only delivers the page + assets.
+- **Experimental layer**: `accounts`, `planning`, `nutrition`, `water`, `payments`,
+  `core` — work-in-progress server-side features.
 
-## 1. Static app layer
+## 1. Product layer (`web` app)
+
+### Routes
+
+| Route | View | Template |
+|-------|------|----------|
+| `/` | `web.views.meal_planner` | `templates/web/index.html` |
+| `/water/` | `web.views.water_tracker` | `templates/web/water-tracker.html` |
+| `/summary/` | `web.views.daily_summary` | `templates/web/summary.html` |
+| `/food-admin/` | `web.views.food_admin` | `templates/web/admin.html` |
+| `/admin/` | Django admin (login required) | — |
+
+The `web.urls` include comes **first** in the project `urlpatterns`, so the product
+pages own the clean routes; the experimental apps' sub-paths (e.g. `/water/track/`,
+`/accounts/login/`) still resolve by falling through to their own includes.
 
 ### Page → logic mapping
 
@@ -19,6 +36,9 @@ LifeRoutine 360 has two independent layers:
 | `water-tracker.html` | `water-tracker.js` + `water-intake.js` |
 | `summary.html`       | `summary.js`                 |
 | `admin.html`         | `admin-script.js` + `food-models.js` |
+
+Assets live in `static/web/` and are referenced via `{% static 'web/...' %}` so Django
+hashed filenames apply in production.
 
 ### Domain model (`food-models.js`)
 
@@ -36,33 +56,24 @@ FoodManager (catalog, localStorage 'foodManagerData')
 
 ### Meal planner (`script.js`)
 
-- Renders one day-card per date; each card has 5 meal sections +
-  water row.
-- Checkboxes store `date → meal → [foodIds]` under
-  `localStorage['mealPlannerData']`.
+- Renders one day-card per date; each card has 5 meal sections + water row.
+- Checkboxes store `date → meal → [foodIds]` under `localStorage['mealPlannerData']`.
 - Calorie totals recompute on every checkbox change
   (`updateMealCalories` → `updateDailyCalories`).
 
 ### Water intake (`water-intake.js` → used by planner + tracker)
 
-- `WaterIntakeManager` tracks consumed ml vs. a daily target
-  (default 3000 ml) per date, giving progress/remaining.
+- `WaterIntakeManager` tracks consumed ml vs. a daily target (default 3000 ml) per
+  date, giving progress/remaining.
 
 ### Auth (`auth-system.js`)
 
-- Demo-only client-side role/module system (`authManager`).
-- **Warning:** `hashPassword` uses base64 — it is not real security. The production
-  static app stores no account data.
-
-### Routing / server
-
-- `server.py` — a `SimpleHTTPRequestHandler` subclass that maps
-  `/summary/`, `/water/`, `/admin/` to the `.html` files and serves static files.
-- `vercel.json` mirrors the same rewrites for production (Vercel rewrite table).
+- Demo-only client-side role/module system (`authManager`). Not linked from any page.
+- **Warning:** `hashPassword` uses base64 — it is not real security.
 
 ## 2. Python engines (shared logic, portable to backend)
 
-Standalone, stdlib-only modules that a future backend (or the admin) can reuse:
+Standalone, stdlib-only modules:
 
 | Module | Responsibility |
 |--------|----------------|
@@ -76,12 +87,13 @@ project for DB-backed pieces, driven by `django.setup()`.
 ## 3. Django layer (`liferoutine360/`)
 
 - Standard Django 5.2 layout: `manage.py`, `liferoutine360/settings.py`, SQLite DB.
-- Apps: `accounts`, `planning`, `nutrition`, `water`, `payments`, `core`.
+- Apps: `web` (product) + `accounts`, `planning`, `nutrition`, `water`, `payments`,
+  `core` (experimental).
 - `water/engine.py` holds the DB-backed `WaterIntakeEngine`
   (`WaterGoal`, `WaterSchedule`, `WaterTimeSlot` models).
 - `planning` defines `Timeline` (used to derive wake-up and meal times).
-
-> Keep this layer optional: the deployed product must never depend on it.
+- Static: `STATICFILES_DIRS` points at `static/` (dev), `STATIC_ROOT` at
+  `staticfiles/` (built by `collectstatic`, served by Whitenoise).
 
 ## 4. Data flows
 
@@ -92,15 +104,17 @@ Browser UI  ──►  FoodManager / MealPlanner / WaterIntakeManager
           per-device persistence (no server)
 ```
 
-No network calls happen at runtime (Bootstrap/Icons load from CDN at page load).
+No first-party network calls happen at runtime (Bootstrap/Icons load from CDN at page
+load).
 
 ## 5. Deployment topology
 
 ```
-git push (GitHub) ──► Vercel (via .vercelignore exclusions)
-                        │
-                        ▼
-              https://liferoutine.vercel.app  (static edge CDN)
+git push (GitHub) ──► Render / Railway
+                          │  gunicorn liferoutine360.wsgi
+                          ▼
+            https://liferoutine.onrender.com  (Django + Whitenoise)
 ```
 
-`.vercelignore` keeps the Django app, Python files, docs, and secrets off the CDN.
+See `docs/DEPLOYMENT.md`. Secrets (`.env`, `db.sqlite3`), `cookies.txt`, `csrf.txt`,
+and the build output `staticfiles/` are git-ignored.

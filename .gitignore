@@ -10,6 +10,7 @@ __pycache__/
 
 # --- Django / backend ---
 db.sqlite3
+staticfiles/
 
 # --- Deploy tooling ---
 .vercel/

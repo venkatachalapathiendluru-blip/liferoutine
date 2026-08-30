@@ -2,7 +2,7 @@
 
 This page covers how to **share the project**, **collaborate as a team on GitHub**, and
 run a clean git workflow. It is written for a small team (1–8 people) using
-GitHub + a free Vercel deployment.
+GitHub + a free Django hosting platform (Render / Railway).
 
 ---
 
@@ -30,10 +30,10 @@ Anyone can then:
 - **View** it: `https://github.com/<your-account>/liferoutine`
 - **Clone** it: `git clone https://github.com/<your-account>/liferoutine`
 - **Use it** without account: on GitHub, **Code → Download ZIP**. (Note: for local
-  dev use the `server.py` instructions in the README, not the repo's static preview.)
+  dev use the Django instructions in the README, not the repo's static preview.)
 
-You can also share a **live demo** with zero accounts: deploy to Vercel
-(`vercel --prod`) and send the `*.vercel.app` URL (see `docs/DEPLOYMENT.md`).
+You can also share a **live demo** with zero accounts: deploy to Render
+(`git push origin main` auto-deploys) and send the live URL (see `docs/DEPLOYMENT.md`).
 
 ---
 
@@ -109,7 +109,7 @@ git pull origin main
 feat(water): add manual ml input
 fix(planner): correct end-date when range is 1 day
 docs(readme): add setup instructions
-chore(server): allow port override
+chore(web): allow port override
 ```
 
 Prefixes: `feat`, `fix`, `docs`, `chore`, `test`, `refactor`, `perf`.
@@ -136,7 +136,7 @@ Keep branches short-lived (`git checkout -b ...`) to minimise conflicts.
 
 ## 6. Code review checklist for this project
 
-- [ ] Run `python3 server.py`; all four routes 200.
+- [ ] `python3 manage.py test` passes; all four product routes 200.
 - [ ] `code` change doesn't type a path like `/home/<someone>` into any file
       (all paths must be portable).
 - [ ] `.py` files stay Python 3.10-compatible (no nested f-strings with same quotes).
@@ -152,7 +152,9 @@ Keep branches short-lived (`git checkout -b ...`) to minimise conflicts.
 2. They run:
    ```bash
    git clone <repo-url>
-   python3 server.py          # frontend works immediately
+   python3 -m venv .venv && source .venv/bin/activate
+   pip install -r requirements.txt
+   python3 manage.py runserver   # product works immediately
    ```
 3. (If they'll touch Python engine tests) setup:
    ```bash

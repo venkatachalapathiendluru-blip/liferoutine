@@ -355,7 +355,7 @@ class MealPlanner {
     
     openWaterTracker() {
         // Open water tracker in a new window/tab
-        window.open('water-tracker.html', '_blank');
+        window.open('/water/', '_blank');
     }
 }
 
