@@ -41,7 +41,6 @@ Data is stored in your browser's `localStorage` — no account or server needed.
 - **Server & routing:** Django 5.2 serving the pages as templates.
 - **Storage:** Browser `localStorage` (app data) + SQLite (Django).
 - **Static files:** django staticfiles + Whitenoise for production.
-- **Python engines:** `routine_engine.py`, `daily_summary_engine.py`, `water_demo.py` (stdlib-only).
 - **Deployment:** Render / Railway / any WSGI host (see `docs/DEPLOYMENT.md`).
 
 ---
@@ -56,12 +55,6 @@ liferoutine/
 │   ├── ARCHITECTURE.md
 │   ├── DEPLOYMENT.md
 │   └── TEAM_WORKFLOW.md
-│
-├── routine_engine.py       # Daily timeline generation (Python)
-├── daily_summary_engine.py # Daily summary scoring (Python)
-├── water_demo.py           # Water scheduling algorithm demo (standalone)
-├── test_timeline.py        # Timeline engine test
-├── test_water_engine.py    # Water engine test
 │
 └── liferoutine360/         # Django project (product + backend experiments)
     ├── manage.py
@@ -141,16 +134,6 @@ See **[docs/TESTING.md](docs/TESTING.md)** for the full guide. Quick start:
 cd liferoutine360
 python3 manage.py check
 python3 manage.py test
-
-# Engine tests (require Django, from the project root)
-cd ..
-python3 test_timeline.py
-python3 test_water_engine.py
-
-# Standalone Python engines (no dependencies)
-python3 routine_engine.py
-python3 daily_summary_engine.py
-python3 water_demo.py
 ```
 
 ---

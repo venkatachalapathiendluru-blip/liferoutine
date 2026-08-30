@@ -63,27 +63,18 @@ Expected output:
 Also confirm static assets load: `curl -s -o /dev/null -w "%{http_code}\n"
 http://127.0.0.1:8000/static/web/script.js` → `200`.
 
-## 4. Engine tests (require Django)
+## 4. Engine & app tests
 
 ```bash
 cd liferoutine
-python3 test_timeline.py     # last line: "✓ All tests passed!"
-python3 test_water_engine.py # last lines: "TEST COMPLETED SUCCESSFULLY!" + "✓ ... working correctly!"
+python3 manage.py test   # runs all app tests (web, accounts, planning, nutrition, water, payments, core)
 ```
 
-## 5. Standalone Python engines (no Django needed)
+The Django project's app tests live in each app's `tests.py` (e.g.
+`liferoutine360/water/tests.py` for the DB-backed water engine) plus
+`liferoutine360/test_dashboard.py` as a manual admin-dashboard script.
 
-```bash
-cd liferoutine
-python3 routine_engine.py        # prints a timeline for a 6:00 AM wake-up
-python3 daily_summary_engine.py  # prints a sample daily summary + recommendations
-python3 water_demo.py            # runs 3 water-scheduling scenarios (early/standard/late)
-```
-
-All three should run to completion with no tracebacks. `water_demo.py` prints
-`Match: ✓` and `Meal avoidance: ✓` for every scenario.
-
-## 6. Manual browser checklist
+## 5. Manual browser checklist
 
 After `python3 manage.py runserver`, verify in a browser:
 
@@ -101,16 +92,14 @@ After `python3 manage.py runserver`, verify in a browser:
 5. **Navbar** — the Meal Planner / Water Tracker / Summary / Accounts links all
    navigate to working routes (no 404s).
 
-## 7. Cross-device check
+## 6. Cross-device check
 
 Because data is stored in `localStorage`, each browser/device is independent. A
 "Save" in Chrome will not appear in Firefox, or on another computer. This is
 expected behaviour, not a bug.
 
-## 8. Gotchas
+## 7. Gotchas
 
-- `test_water_engine.py` previously used nested f-strings which only parse on Python
-  3.12+. It is written to be **Python 3.10-compatible** — keep it that way.
 - Always reset `localStorage` (DevTools → Application → Clear storage) before
   re-testing default seed data.
 - If anything fails, the parent app uses `localStorage` keys:
