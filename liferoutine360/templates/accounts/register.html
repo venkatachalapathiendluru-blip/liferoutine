@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - LifeRoutine 360{% endblock %}
+
+{% block extra_css %}
+<style>
+.register-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.register-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.register-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+.register-header h2 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.register-header p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+.register-body {
+    padding: 2.5rem;
+}
+
+.form-floating {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    padding: 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.form-select {
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    padding: 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.btn-register {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.btn-register:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    color: white;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #6c757d;
+}
+
+.login-link a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.success-message {
+    color: #28a745;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+}
+
+.feature-list li {
+    padding: 0.5rem 0;
+    color: #6c757d;
+}
+
+.feature-list li:before {
+    content: "✓";
+    color: #28a745;
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .register-body {
+        padding: 1.5rem;
+    }
+    
+    .register-header {
+        padding: 1.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                <div class="register-card">
+                    <div class="register-header">
+                        <h2><i class="bi bi-heart-pulse-fill me-2"></i>Join LifeRoutine 360</h2>
+                        <p>Start your journey to a healthier lifestyle today</p>
+                    </div>
+                    <div class="register-body">
+                        <div class="row">
+                            <div class="col-md-8 mx-auto">
+                                <form method="post" id="registerForm">
+                                    {% csrf_token %}
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                {{ form.first_name }}
+                                                <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                                                {% if form.first_name.errors %}
+                                                    <div class="error-message">{{ form.first_name.errors|join:", " }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                {{ form.last_name }}
+                                                <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                                                {% if form.last_name.errors %}
+                                                    <div class="error-message">{{ form.last_name.errors|join:", " }}</div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-floating">
+                                        {{ form.username }}
+                                        <label for="{{ form.username.id_for_label }}">Username</label>
+                                        {% if form.username.errors %}
+                                            <div class="error-message">{{ form.username.errors|join:", " }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="form-floating">
+                                        {{ form.email }}
+                                        <label for="{{ form.email.id_for_label }}">Email Address</label>
+                                        {% if form.email.errors %}
+                                            <div class="error-message">{{ form.email.errors|join:", " }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="form-floating">
+                                        {{ form.password1 }}
+                                        <label for="{{ form.password1.id_for_label }}">Password</label>
+                                        {% if form.password1.errors %}
+                                            <div class="error-message">{{ form.password1.errors|join:", " }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="form-floating">
+                                        {{ form.password2 }}
+                                        <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+                                        {% if form.password2.errors %}
+                                            <div class="error-message">{{ form.password2.errors|join:", " }}</div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-register">
+                                        <i class="bi bi-person-plus me-2"></i>Create Account
+                                    </button>
+                                </form>
+                                
+                                <div class="login-link">
+                                    Already have an account? <a href="{% url 'accounts:login' %}">Sign in here</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="bi bi-shield-check text-success" style="font-size: 2rem;"></i>
+                                    <h6 class="mt-2">Secure</h6>
+                                    <p class="small text-muted">Your data is protected with enterprise-grade security</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="bi bi-lightning-charge text-warning" style="font-size: 2rem;"></i>
+                                    <h6 class="mt-2">Fast</h6>
+                                    <p class="small text-muted">Get started in minutes with our streamlined process</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="bi bi-heart text-danger" style="font-size: 2rem;"></i>
+                                    <h6 class="mt-2">Personalized</h6>
+                                    <p class="small text-muted">Customized plans tailored to your health goals</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('registerForm');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    
+    form.addEventListener('submit', function(e) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Creating Account...';
+        
+        // Re-enable after 3 seconds if form hasn't submitted
+        setTimeout(function() {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="bi bi-person-plus me-2"></i>Create Account';
+        }, 3000);
+    });
+    
+    // Add password strength indicator
+    const password1 = document.getElementById('id_password1');
+    const password2 = document.getElementById('id_password2');
+    
+    function checkPasswordStrength() {
+        const password = password1.value;
+        let strength = 0;
+        
+        if (password.length >= 8) strength++;
+        if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+        if (password.match(/[0-9]/)) strength++;
+        if (password.match(/[^a-zA-Z0-9]/)) strength++;
+        
+        // You can add visual feedback here if needed
+    }
+    
+    password1.addEventListener('input', checkPasswordStrength);
+    password2.addEventListener('input', function() {
+        if (password2.value !== password1.value) {
+            password2.setCustomValidity('Passwords do not match');
+        } else {
+            password2.setCustomValidity('');
+        }
+    });
+});
+</script>
+{% endblock %}

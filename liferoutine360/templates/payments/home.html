@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Payments - LifeRoutine 360{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1>Payment Management</h1>
+        <p class="text-muted">Manage your subscriptions and billing</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5>Payment Features</h5>
+                <ul>
+                    <li>Manage active subscriptions</li>
+                    <li>View billing history</li>
+                    <li>Update payment methods</li>
+                    <li>Download invoices</li>
+                </ul>
+                <a href="{% url 'payments:subscription_list' %}" class="btn btn-primary">Subscriptions</a>
+                <a href="{% url 'payments:billing' %}" class="btn btn-info">Billing</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

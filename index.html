@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Meal Planner | LifeRoutine 360</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .main-content {
+            margin-top: 80px;
+            min-height: calc(100vh - 200px);
+        }
+        .meal-card {
+            transition: transform 0.2s;
+        }
+        .meal-card:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-heart-pulse-fill me-2"></i>LifeRoutine 360
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">
+                            <i class="bi bi-calendar-check me-1"></i>Meal Planner
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="water-tracker.html">
+                            <i class="bi bi-droplet-fill me-1"></i>Water Tracker
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="summary.html">
+                            <i class="bi bi-graph-up me-1"></i>Summary
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h1 class="card-title h2 mb-4">
+                                <i class="bi bi-calendar-check text-primary me-2"></i>Daily Meal Planner
+                            </h1>
+                            
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-3">
+                                    <label for="startDate" class="form-label">Start Date</label>
+                                    <input type="date" id="startDate" class="form-control">
+                                </div>
+                                
+                                <div class="col-md-3">
+                                    <label for="dateRange" class="form-label">Date Range</label>
+                                    <select id="dateRange" class="form-select">
+                                        <option value="1">1 Day</option>
+                                        <option value="7">7 Days</option>
+                                        <option value="custom">Custom</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-3" id="customRange" style="display: none;">
+                                    <label for="endDate" class="form-label">End Date</label>
+                                    <input type="date" id="endDate" class="form-control">
+                                </div>
+                                
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="d-grid gap-2 d-md-flex">
+                                        <button id="generateBtn" class="btn btn-primary">
+                                            <i class="bi bi-calendar-plus me-1"></i>Generate
+                                        </button>
+                                        <button id="saveBtn" class="btn btn-success">
+                                            <i class="bi bi-save me-1"></i>Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <div id="plannerContainer" class="row g-4">
+                        <!-- Planner content will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-light text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0">&copy; 2024 LifeRoutine 360. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="food-models.js"></script>
+    <script src="water-intake.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

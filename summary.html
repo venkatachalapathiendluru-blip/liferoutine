@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Summary | LifeRoutine 360</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .main-content {
+            margin-top: 80px;
+            min-height: calc(100vh - 200px);
+        }
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .nav-link {
+            transition: all 0.2s ease;
+        }
+        .nav-link:hover {
+            transform: translateY(-1px);
+        }
+        .tab-btn {
+            transition: all 0.2s ease;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-heart-pulse-fill me-2"></i>LifeRoutine 360
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="bi bi-calendar-check me-1"></i>Meal Planner
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="water-tracker.html">
+                            <i class="bi bi-droplet-fill me-1"></i>Water Tracker
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="summary.html">
+                            <i class="bi bi-graph-up me-1"></i>Summary
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h1 class="card-title h2 mb-3">
+                                        <i class="bi bi-graph-up text-success me-2"></i>Daily Summary
+                                    </h1>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row g-3 align-items-end">
+                                        <div class="col-md-6">
+                                            <label for="summaryDate" class="form-label">Select Date</label>
+                                            <input type="date" id="summaryDate" class="form-control">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button id="refreshSummary" class="btn btn-primary w-100">
+                                                <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Overall Score -->
+            <div class="row mb-4">
+                <div class="col-lg-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <h2 class="card-title h4 mb-4">
+                                <i class="bi bi-trophy text-warning me-2"></i>Today's Performance
+                            </h2>
+                            <div class="score-display">
+                                <div class="score-circle bg-primary text-white" id="scoreCircle">
+                                    <span class="score-number h3" id="scoreNumber">0%</span>
+                                </div>
+                                <div class="score-label mt-3" id="scoreLabel">Loading...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="col-lg-8">
+                    <div class="row g-3">
+                        <!-- Activities Summary -->
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-list-check me-2"></i>Activities
+                                        <span class="badge bg-light text-primary float-end" id="activitiesScore">0%</span>
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center mb-3">
+                                        <div class="col-6">
+                                            <div class="stat-item">
+                                                <h6 class="text-muted mb-1">Planned</h6>
+                                                <div class="h5 text-primary" id="plannedActivities">0</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="stat-item">
+                                                <h6 class="text-muted mb-1">Completed</h6>
+                                                <div class="h5 text-success" id="completedActivities">0</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="activity-list" id="activityList">
+                                        <p class="text-muted text-center">No activity data available</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Water Intake Summary -->
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-droplet-fill me-2"></i>Water Intake
+                                        <span class="badge bg-light text-info float-end" id="waterScore">0%</span>
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center mb-3">
+                                        <div class="col-4">
+                                            <div class="stat-item">
+                                                <h6 class="text-muted mb-1">Target</h6>
+                                                <div class="h6 text-info" id="waterTarget">0 ml</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="stat-item">
+                                                <h6 class="text-muted mb-1">Consumed</h6>
+                                                <div class="h6 text-success" id="waterConsumed">0 ml</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="stat-item">
+                                                <h6 class="text-muted mb-1">Remaining</h6>
+                                                <div class="h6 text-warning" id="waterRemaining">0 ml</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="progress mb-2" style="height: 20px;">
+                                        <div class="progress-bar bg-info" id="waterProgress" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Calories Summary -->
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-fire me-2"></i>Calories
+                                        <span class="badge bg-light text-dark float-end" id="caloriesScore">Good</span>
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center mb-3">
+                                        <div class="col-6 col-md-3">
+                                            <div class="meal-stat">
+                                                <h6 class="text-muted mb-1">Breakfast</h6>
+                                                <div class="h5" id="breakfastCalories">0 cal</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <div class="meal-stat">
+                                                <h6 class="text-muted mb-1">Lunch</h6>
+                                                <div class="h5" id="lunchCalories">0 cal</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <div class="meal-stat">
+                                                <h6 class="text-muted mb-1">Dinner</h6>
+                                                <div class="h5" id="dinnerCalories">0 cal</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-3">
+                                            <div class="meal-stat">
+                                                <h6 class="text-muted mb-1">Snacks</h6>
+                                                <div class="h5" id="snacksCalories">0 cal</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <h5 class="text-primary">Total: <span id="totalCalories">0 cal</span></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Health Message -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow-sm bg-light">
+                        <div class="card-body">
+                            <h3 class="card-title h5 mb-3">
+                                <i class="bi bi-lightbulb text-warning me-2"></i>Health Insight
+                            </h3>
+                            <div class="message-content" id="healthMessage">
+                                <p class="text-muted">Loading your personalized health message...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Detailed Breakdown -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h2 class="card-title h4 mb-4">
+                                <i class="bi bi-bar-chart text-primary me-2"></i>Detailed Breakdown
+                            </h2>
+                            
+                            <!-- Bootstrap Tabs -->
+                            <ul class="nav nav-tabs mb-4" id="breakdownTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="routine-tab-btn" data-bs-toggle="tab" data-bs-target="#routine-tab" type="button" role="tab">
+                                        <i class="bi bi-list-check me-1"></i>Routine
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="nutrition-tab-btn" data-bs-toggle="tab" data-bs-target="#nutrition-tab" type="button" role="tab">
+                                        <i class="bi bi-egg-fried me-1"></i>Nutrition
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="hydration-tab-btn" data-bs-toggle="tab" data-bs-target="#hydration-tab" type="button" role="tab">
+                                        <i class="bi bi-droplet me-1"></i>Hydration
+                                    </button>
+                                </li>
+                            </ul>
+                            
+                            <div class="tab-content" id="breakdownTabContent">
+                                <div class="tab-pane fade show active" id="routine-tab" role="tabpanel">
+                                    <div class="routine-breakdown" id="routineBreakdown">
+                                        <p class="text-muted">Generating routine breakdown...</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="tab-pane fade" id="nutrition-tab" role="tabpanel">
+                                    <div class="nutrition-breakdown" id="nutritionBreakdown">
+                                        <p class="text-muted">Generating nutrition breakdown...</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="tab-pane fade" id="hydration-tab" role="tabpanel">
+                                    <div class="hydration-breakdown" id="hydrationBreakdown">
+                                        <p class="text-muted">Generating hydration breakdown...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recommendations -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h2 class="card-title h4 mb-4">
+                                <i class="bi bi-stars text-success me-2"></i>Recommendations for Tomorrow
+                            </h2>
+                            <div class="recommendation-list" id="recommendationList">
+                                <p class="text-muted">Generating personalized recommendations...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="bg-dark text-light text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0">&copy; 2024 LifeRoutine 360. All rights reserved.</p>
+            <div class="quick-actions mt-2">
+                <button onclick="window.print()" class="btn btn-outline-light btn-sm me-2">
+                    <i class="bi bi-printer me-1"></i>Print Summary
+                </button>
+                <button id="shareSummary" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-share me-1"></i>Share
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="food-models.js"></script>
+    <script src="water-intake.js"></script>
+    <script src="routine-engine.js"></script>
+    <script src="summary.js"></script>
+</body>
+</html>
