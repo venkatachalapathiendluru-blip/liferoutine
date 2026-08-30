@@ -1,0 +1,179 @@
+{% extends 'web/base.html' %}
+{% load static %}
+
+{% block title %}Food Management Admin | LifeRoutine 360{% endblock %}
+
+{% block content %}
+<div class="reveal">
+    <div class="mb-6">
+        <h1 class="section-title">
+            <i class="bi bi-gear-fill text-sky-300 me-2"></i>Food Management Admin
+        </h1>
+        <p class="section-subtitle">Manage the food database, ingredients and the calorie calculator.</p>
+    </div>
+
+    <div class="g-card reveal reveal-1 mb-6">
+        <div class="g-tabs">
+            <button class="nav-btn active" data-tab="foods">
+                <i class="bi bi-egg-fried me-1"></i>Foods
+            </button>
+            <button class="nav-btn" data-tab="ingredients">
+                <i class="bi bi-basket me-1"></i>Ingredients
+            </button>
+            <button class="nav-btn" data-tab="calories">
+                <i class="bi bi-calculator me-1"></i>Calorie Calculator
+            </button>
+        </div>
+
+        <div class="tab-content active" id="foods-tab">
+            <div class="section-header">
+                <h2>Food Management</h2>
+                <button class="add-btn" id="addFoodBtn">+ Add Food</button>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="foodSearch" placeholder="Search foods...">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                </select>
+            </div>
+            <div class="food-list" id="foodList"></div>
+        </div>
+
+        <div class="tab-content" id="ingredients-tab">
+            <div class="section-header">
+                <h2>Ingredient Management</h2>
+                <button class="add-btn" id="addIngredientBtn">+ Add Ingredient</button>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="ingredientSearch" placeholder="Search ingredients...">
+            </div>
+            <div class="ingredient-list" id="ingredientList"></div>
+        </div>
+
+        <div class="tab-content" id="calories-tab">
+            <div class="section-header">
+                <h2>Calorie Calculator</h2>
+            </div>
+
+            <div class="calculator-section">
+                <h3>Meal Calculator</h3>
+                <div class="meal-calculator">
+                    <div class="food-selector">
+                        <select id="calculatorFoodSelect">
+                            <option value="">Select a food</option>
+                        </select>
+                        <input type="number" id="calculatorQuantity" placeholder="Quantity" min="0.1" step="0.1">
+                        <button id="addToMealBtn" class="add-btn">Add to Meal</button>
+                    </div>
+                    <div class="meal-items">
+                        <h4>Meal Items:</h4>
+                        <div id="mealItemsList"></div>
+                        <div class="meal-total">
+                            <strong>Total Calories: <span id="mealTotalCalories">0</span></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calculator-section">
+                <h3>Daily Calculator</h3>
+                <div class="daily-calculator">
+                    <div class="daily-meals">
+                        <div class="meal-section">
+                            <h4>Breakfast</h4>
+                            <div class="meal-items" id="breakfast-items"></div>
+                            <div class="meal-calories">Calories: <span class="meal-calorie-count">0</span></div>
+                        </div>
+                        <div class="meal-section">
+                            <h4>Lunch</h4>
+                            <div class="meal-items" id="lunch-items"></div>
+                            <div class="meal-calories">Calories: <span class="meal-calorie-count">0</span></div>
+                        </div>
+                        <div class="meal-section">
+                            <h4>Dinner</h4>
+                            <div class="meal-items" id="dinner-items"></div>
+                            <div class="meal-calories">Calories: <span class="meal-calorie-count">0</span></div>
+                        </div>
+                        <div class="meal-section">
+                            <h4>Snacks</h4>
+                            <div class="meal-items" id="snacks-items"></div>
+                            <div class="meal-calories">Calories: <span class="meal-calorie-count">0</span></div>
+                        </div>
+                    </div>
+                    <div class="daily-total">
+                        <h3>Daily Total: <span id="dailyTotalCalories">0</span> calories</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="foodModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="foodModalTitle">Add Food</h3>
+            <button class="close" aria-label="Close">&times;</button>
+        </div>
+        <form id="foodForm">
+            <div class="form-group">
+                <label for="foodName">Name:</label>
+                <input type="text" id="foodName" class="g-input w-full" required>
+            </div>
+            <div class="form-group">
+                <label for="foodCategory">Category:</label>
+                <select id="foodCategory" class="g-select w-full" required></select>
+            </div>
+            <div class="form-group">
+                <label for="foodCalories">Calories per Unit:</label>
+                <input type="number" id="foodCalories" class="g-input w-full" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="foodUnit">Unit:</label>
+                <input type="text" id="foodUnit" class="g-input w-full" value="serving" required>
+            </div>
+            <div class="form-group">
+                <label>Ingredients:</label>
+                <div class="ingredients-list" id="foodIngredients"></div>
+                <button type="button" class="add-btn" id="addIngredientToFoodBtn">+ Add Ingredient</button>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="g-btn g-btn-solid">Save</button>
+                <button type="button" class="g-btn g-btn-ghost cancel-btn">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal" id="ingredientModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="ingredientModalTitle">Add Ingredient</h3>
+            <button class="close" aria-label="Close">&times;</button>
+        </div>
+        <form id="ingredientForm">
+            <div class="form-group">
+                <label for="ingredientName">Name:</label>
+                <input type="text" id="ingredientName" class="g-input w-full" required>
+            </div>
+            <div class="form-group">
+                <label for="ingredientCalories">Calories per Unit:</label>
+                <input type="number" id="ingredientCalories" class="g-input w-full" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="ingredientUnit">Unit:</label>
+                <input type="text" id="ingredientUnit" class="g-input w-full" value="g" required>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="g-btn g-btn-solid">Save</button>
+                <button type="button" class="g-btn g-btn-ghost cancel-btn">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'web/food-models.js' %}"></script>
+    <script src="{% static 'web/admin-script.js' %}"></script>
+{% endblock %}
