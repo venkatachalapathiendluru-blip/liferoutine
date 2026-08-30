@@ -1,7 +1,7 @@
 # Testing Guide
 
-This guide explains how to test every part of the project: the frontend routes, the
-standalone Python engines, the Django project, and manual browser checks.
+This guide explains how to test every part of the project: the Django routes, the
+standalone Python engines, and manual browser checks.
 
 ## 1. Prerequisites
 
@@ -9,31 +9,45 @@ standalone Python engines, the Django project, and manual browser checks.
 python3 --version        # 3.10+
 git --version            # optional
 cd liferoutine
-```
 
-For tests that use the Django backend (`test_timeline.py`, `test_water_engine.py`,
-`manage.py test`) you also need Django:
-
-```bash
 python3 -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## 2. Frontend smoke test (routes)
-
-Start the server, then hit every route. Each should return `200`:
+## 2. Django project checks & tests
 
 ```bash
-cd liferoutine
-python3 server.py &
-sleep 1
+cd liferoutine/liferoutine360
+python3 manage.py check               # "System check identified no issues (0 silenced)."
+python3 manage.py check --deploy      # flags deployment-safety issues (debug/secret/hosts)
+python3 manage.py test                # Django test suites (web/accounts/planning/nutrition/water/payments/core)
+```
 
-for path in "/" "/summary/" "/water/" "/admin/"; do
+The `web` suite tests that every product page returns 200:
+
+```
+/ -> 200
+/summary/ -> 200
+/water/ -> 200
+/food-admin/ -> 200
+```
+
+## 3. Route smoke test (live server)
+
+Start Django, then hit every route:
+
+```bash
+cd liferoutine360
+python3 manage.py runserver 127.0.0.1:8000 &
+sleep 3
+
+for path in "/" "/summary/" "/water/" "/food-admin/"; do
   echo -n "$path -> "
-  curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:8000$path"
+  curl -s -o /dev/null -w "%{http_code}\n" "http://127.0.0.1:8000$path"
 done
 
+# stop the server
 kill %1
 ```
 
@@ -43,10 +57,21 @@ Expected output:
 / -> 200
 /summary/ -> 200
 /water/ -> 200
-/admin/ -> 200
+/food-admin/ -> 200
 ```
 
-## 3. Standalone Python engines (no Django needed)
+Also confirm static assets load: `curl -s -o /dev/null -w "%{http_code}\n"
+http://127.0.0.1:8000/static/web/script.js` → `200`.
+
+## 4. Engine tests (require Django)
+
+```bash
+cd liferoutine
+python3 test_timeline.py     # last line: "✓ All tests passed!"
+python3 test_water_engine.py # last lines: "TEST COMPLETED SUCCESSFULLY!" + "✓ ... working correctly!"
+```
+
+## 5. Standalone Python engines (no Django needed)
 
 ```bash
 cd liferoutine
@@ -58,41 +83,23 @@ python3 water_demo.py            # runs 3 water-scheduling scenarios (early/stan
 All three should run to completion with no tracebacks. `water_demo.py` prints
 `Match: ✓` and `Meal avoidance: ✓` for every scenario.
 
-## 4. Engine tests (require Django)
-
-```bash
-cd liferoutine
-python3 test_timeline.py     # last line: "✓ All tests passed!"
-python3 test_water_engine.py # last lines: "TEST COMPLETED SUCCESSFULLY!" + "✓ ... working correctly!"
-```
-
-## 5. Django project checks
-
-```bash
-cd liferoutine/liferoutine360
-python3 manage.py check               # "System check identified no issues (0 silenced)."
-python3 manage.py test                # runs the Django test suites (accounts/planning/nutrition/water/payments/core)
-python3 test_dashboard.py             # boots a test client; prints login/dashboard status 200
-```
-
-> `test_dashboard.py` expects `liferoutine360/liferoutine360/urls.py` to expose the
-> login + dashboard routes. Run it from inside the `liferoutine360/` directory.
-
 ## 6. Manual browser checklist
 
-After `python3 server.py`, verify in a browser:
+After `python3 manage.py runserver`, verify in a browser:
 
-1. **Meal Planner** (`http://localhost:8000/`)
+1. **Meal Planner** (`http://127.0.0.1:8000/`)
    - Generate a 7-day plan → one card appears per day with 5 meal sections + water row.
    - Check a food → the meal calorie count and the day's total update immediately.
    - Click **Save** → a "Saved" indicator flashes; data persists after refresh.
-2. **Water Tracker** (`http://localhost:8000/water/`)
+2. **Water Tracker** (`http://127.0.0.1:8000/water/`)
    - Log water → progress updates (`consumed / target ml` and percentage).
-3. **Summary** (`http://localhost:8000/summary/`)
+3. **Summary** (`http://127.0.0.1:8000/summary/`)
    - Loads the daily summary view and shows score/tasks/water/calories sections.
-4. **Admin** (`http://localhost:8000/admin/`)
+4. **Food Admin** (`http://127.0.0.1:8000/food-admin/`)
    - Add a food and an ingredient; both appear in the catalog.
    - Calorie calculator: add a food + quantity to a meal → totals update.
+5. **Navbar** — the Meal Planner / Water Tracker / Summary / Accounts links all
+   navigate to working routes (no 404s).
 
 ## 7. Cross-device check
 
@@ -108,3 +115,5 @@ expected behaviour, not a bug.
   re-testing default seed data.
 - If anything fails, the parent app uses `localStorage` keys:
   `mealPlannerData`, `foodManagerData`, and `liferoutine_*`.
+- `staticfiles/` is build output — run `collectstatic` after changing files in
+  `static/`; the dev server serves `static/` directly so no step is needed locally.

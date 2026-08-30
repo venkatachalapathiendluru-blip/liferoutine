@@ -1,6 +1,8 @@
 # LifeRoutine 360
 
-A personal daily-health web app that helps you plan meals, track water intake, and review end-of-day summaries. It ships as a **static web app** (no build step, no framework) plus an **optional Django backend** for experiments and Python-based health engines.
+A personal daily-health web app that helps you plan meals, track water intake, and
+review end-of-day summaries. The product front-end is served by **Django 5 + SQLite**
+(no separate static server), with the Python health engines alongside for tests.
 
 ---
 
@@ -22,12 +24,12 @@ A personal daily-health web app that helps you plan meals, track water intake, a
 
 ## Features
 
-| Page | What it does |
-|------|--------------|
-| **Meal Planner** (`index.html`) | Generate a 1–7 day (or custom) meal plan. Check foods per meal (Early Morning, Breakfast, Lunch, Snacks, Dinner) and see per-meal + daily calories that update live. |
-| **Water Tracker** (`water-tracker.html`) | Log daily water intake; monitor progress vs. a target (default 3000 ml). |
-| **Daily Summary** (`summary.html`) | End-of-day health summary across tasks, water intake, and calories with an overall score and recommendations. |
-| **Food Admin** (`admin.html`) | Manage the food & ingredient catalog and use the calorie calculator (meal and daily totals). |
+| Page | Route | What it does |
+|------|-------|--------------|
+| **Meal Planner** | `/` | Generate a 1–7 day (or custom) meal plan. Check foods per meal (Early Morning, Breakfast, Lunch, Snacks, Dinner) and see per-meal + daily calories that update live. |
+| **Water Tracker** | `/water/` | Log daily water intake; monitor progress vs. a target (default 3000 ml). |
+| **Daily Summary** | `/summary/` | End-of-day health summary across tasks, water intake, and calories with an overall score and recommendations. |
+| **Food Admin** | `/food-admin/` | Manage the food & ingredient catalog and use the calorie calculator (meal and daily totals). |
 
 Data is stored in your browser's `localStorage` — no account or server needed.
 
@@ -36,10 +38,11 @@ Data is stored in your browser's `localStorage` — no account or server needed.
 ## Tech Stack
 
 - **Frontend:** HTML5, CSS3, vanilla JavaScript (ES6 classes), Bootstrap 5 (CDN), Bootstrap Icons.
-- **Storage:** Browser `localStorage`.
-- **Local server:** Python `http.server` based router (`server.py`).
-- **Backend (optional):** Django 5.2 + SQLite (`liferoutine360/`).
-- **Deployment:** Vercel (static hosting via `vercel.json`).
+- **Server & routing:** Django 5.2 serving the pages as templates.
+- **Storage:** Browser `localStorage` (app data) + SQLite (Django).
+- **Static files:** django staticfiles + Whitenoise for production.
+- **Python engines:** `routine_engine.py`, `daily_summary_engine.py`, `water_demo.py` (stdlib-only).
+- **Deployment:** Render / Railway / any WSGI host (see `docs/DEPLOYMENT.md`).
 
 ---
 
@@ -47,22 +50,12 @@ Data is stored in your browser's `localStorage` — no account or server needed.
 
 ```
 liferoutine/
-├── index.html              # Meal Planner (home page)
-├── summary.html            # Daily Summary
-├── admin.html              # Food/ingredient admin + calculator
-├── water-tracker.html      # Water tracker
-│
-├── server.py               # Local Python dev server with URL routing
-├── vercel.json             # Vercel deployment config (production)
-├── .vercelignore           # Files excluded from Vercel deploys
-│
-├── food-models.js          # Food/Ingredient/CalorieCalculator models (localStorage)
-├── script.js               # Meal planner UI logic
-├── water-intake.js         # Water intake manager
-├── water-tracker.js        # Water tracker UI logic
-├── summary.js              # Summary UI logic
-├── admin-script.js         # Admin UI logic
-├── auth-system.js          # Client-side role/module demo (DEMO ONLY)
+├── requirements.txt        # Python dependencies (Django, Whitenoise)
+├── docs/                   # Documentation
+│   ├── TESTING.md
+│   ├── ARCHITECTURE.md
+│   ├── DEPLOYMENT.md
+│   └── TEAM_WORKFLOW.md
 │
 ├── routine_engine.py       # Daily timeline generation (Python)
 ├── daily_summary_engine.py # Daily summary scoring (Python)
@@ -70,28 +63,28 @@ liferoutine/
 ├── test_timeline.py        # Timeline engine test
 ├── test_water_engine.py    # Water engine test
 │
-├── liferoutine360/         # [OPTIONAL] Django backend prototype
-│   ├── manage.py
-│   └── liferoutine360/settings.py
-│
-├── requirements.txt        # Python dependencies (backend)
-└── docs/                   # Documentation
-    ├── TESTING.md
-    ├── DEPLOYMENT.md
-    └── TEAM_WORKFLOW.md
+└── liferoutine360/         # Django project (product + backend experiments)
+    ├── manage.py
+    ├── liferoutine360/     # settings.py, urls.py, wsgi.py ...
+    ├── web/                # Product pages (views, urls, tests)
+    ├── templates/web/      # meal planner / summary / water / food-admin
+    ├── static/web/         # the app's JS + CSS
+    ├── accounts/           # login/register/profile app
+    ├── planning/           # experimental backend app (timelines)
+    ├── nutrition/          # experimental backend app
+    ├── water/              # experimental backend app (DB water engine)
+    ├── payments/           # experimental backend app
+    └── core/               # experimental dashboard app
 ```
-
-> Note: the Django app (`liferoutine360/`) is an optional, experimental backend. The
-> deployed product is the static site. See [DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ---
 
 ## Requirements
 
 - **Python 3.10+** (`python3` in your terminal)
+- **Django 5.2** and **Whitenoise** (installed via `requirements.txt`)
 - A web browser
 - (Optional) **Git** + **GitHub account** for version control/sharing
-- (Optional) `pip` + a virtual environment for the Django backend
 
 Check your versions:
 
@@ -106,29 +99,6 @@ git --version      # optional
 
 ```bash
 cd liferoutine
-python3 server.py
-```
-
-Open [http://localhost:8000/](http://localhost:8000/) and use the navbar:
-
-| URL | Page |
-|-----|------|
-| `http://localhost:8000/` | Meal Planner |
-| `http://localhost:8000/summary/` | Daily Summary |
-| `http://localhost:8000/water/` | Water Tracker |
-| `http://localhost:8000/admin/` | Food Admin |
-
-Stop the server with `Ctrl+C`.
-
-> Why `server.py` and not just opening `index.html`? The app loads JS modules and
-> relies on `localStorage`, and the nice `/summary/`, `/water/`, `/admin/` routes come
-> from `server.py`. You can also run `python3 -m http.server 8000` but then you must
-> visit `index.html` / `summary.html` directly (no pretty routes).
-
-### Running the Django backend (optional / experimental)
-
-```bash
-cd liferoutine
 
 # 1) one-time setup
 python3 -m venv .venv
@@ -139,15 +109,26 @@ pip install -r requirements.txt
 cd liferoutine360
 python3 manage.py migrate
 
-# 3) create a superuser (optional, for Django admin)
+# 3) (optional) create a superuser for Django admin
 python3 manage.py createsuperuser
 
 # 4) run the dev server
 python3 manage.py runserver
 ```
 
-Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/) and use the Django admin at
-[http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/).
+Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/) and use the navbar:
+
+| URL | Page |
+|-----|------|
+| `http://127.0.0.1:8000/` | Meal Planner |
+| `http://127.0.0.1:8000/water/` | Water Tracker |
+| `http://127.0.0.1:8000/summary/` | Daily Summary |
+| `http://127.0.0.1:8000/food-admin/` | Food Admin |
+| `http://127.0.0.1:8000/admin/` | Django admin (login required) |
+
+> The app's data lives in `localStorage`; Django only serves the pages, so you don't
+> need to touch the database for the product to work. The `accounts/`, `planning/`,
+> `nutrition/`, `water/`, `payments/`, `core/` apps are experimental backend features.
 
 ---
 
@@ -156,59 +137,56 @@ Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/) and use the Django admin a
 See **[docs/TESTING.md](docs/TESTING.md)** for the full guide. Quick start:
 
 ```bash
-# Frontend routes (expect HTTP 200 for each)
-python3 server.py &        # then curl /, /summary/, /water/, /admin/
-curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8000/
+# Django project checks & tests
+cd liferoutine360
+python3 manage.py check
+python3 manage.py test
+
+# Engine tests (require Django, from the project root)
+cd ..
+python3 test_timeline.py
+python3 test_water_engine.py
 
 # Standalone Python engines (no dependencies)
 python3 routine_engine.py
 python3 daily_summary_engine.py
 python3 water_demo.py
-
-# Engine tests (require Django + `pip install -r requirements.txt`)
-python3 test_timeline.py
-python3 test_water_engine.py
-
-# Django project checks & tests
-cd liferoutine360
-python3 manage.py check
-python3 manage.py test
 ```
 
 ---
 
 ## Deployment (Production)
 
-The static site is **Vercel-ready** (`vercel.json`). In under a minute:
+The site is a single Django app — deploy it to any WSGI host. Recommended: **Render**
+or **Railway** (free tiers). Summary:
 
 ```bash
-npm i -g vercel          # once
-cd liferoutine
-vercel --prod
+# build command
+pip install -r requirements.txt && python3 manage.py collectstatic --noinput
+
+# start command
+gunicorn liferoutine360.wsgi
 ```
 
-You'll receive a live URL like `https://liferoutine.vercel.app`. See
-**[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)** for Vercel details, custom domains, and
-notes about the (separate) Django backend deployment.
+Supply `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=False`, and `DJANGO_ALLOWED_HOSTS=<your-domain>`
+as environment variables. Static files are served by Whitenoise — no CDN setup needed.
+Full details, including a `render.yaml` blueprint, are in
+**[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**.
 
 ---
 
 ## Sharing & Team Workflow
 
-The project is ready to share and collaborate on. The workflow is:
+The project is on GitHub and ready to collaborate on. The workflow is:
 
 ```bash
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/<you>/liferoutine.git
-git push -u origin main
+git clone git@github.com:venkatachalapathiendluru-blip/liferoutine.git
+cd liferoutine
+# create a branch, make changes, open a Pull Request
 ```
 
-Then teammates `git clone` it, Git-tracked changes flow through branches + pull
-requests. Full guide — including branch names, commit style, PR etiquette, and how to
-bring new members on board — is in **[docs/TEAM_WORKFLOW.md](docs/TEAM_WORKFLOW.md)**.
+Full guide — including branch names, commit style, PR etiquette, and how to bring new
+members on board — is in **[docs/TEAM_WORKFLOW.md](docs/TEAM_WORKFLOW.md)**.
 
 ---
 
@@ -216,8 +194,8 @@ bring new members on board — is in **[docs/TEAM_WORKFLOW.md](docs/TEAM_WORKFLO
 
 - All user-entered data (meals, foods, water) lives **only in the browser's
   `localStorage`** per device. Clearing browser data resets the app.
-- `cookies.txt`, `csrf.txt`, `.env`, and the Django `db.sqlite3` are **git-ignored and
-  Vercel-ignored** — they are never deployed or committed.
+- `cookies.txt`, `csrf.txt`, `.env`, `db.sqlite3`, and `staticfiles/` are
+  **git-ignored** — they are never committed or deployed.
 - The `auth-system.js` file uses a trivial client-side "hash" and is a **demo only** —
   never use it for real security.
 
@@ -228,10 +206,11 @@ bring new members on board — is in **[docs/TEAM_WORKFLOW.md](docs/TEAM_WORKFLO
 | Problem | Fix |
 |---------|-----|
 | `python3` not found | Install Python 3.10+ from python.org or your package manager. |
-| Port 8000 in use | Run `python3 server.py 8001` or stop the other process (`kill %1` in the shell that started it). |
+| Port 8000 in use | Use a different port: `python3 manage.py runserver 8001`. |
 | Page loads but no data saves | `localStorage` may be blocked (private mode / strict settings). Use a normal browser tab. |
-| `ModuleNotFoundError: django` | `pip install -r requirements.txt` (or inside a venv — see above). |
-| Vercel build shows Python files | Fine by design; `.vercelignore` excludes `*.py`, `*.md`, the Django app, and secrets from the deploy. |
+| `ModuleNotFoundError: django` | `pip install -r requirements.txt` (inside the venv — see above). |
+| Static files 404 in production | Run `python3 manage.py collectstatic` in the build command (Whitenoise serves them). |
+| Page loads unstyled | Check the browser console; confirm assets load from `/static/web/...`. |
 
 ---
 

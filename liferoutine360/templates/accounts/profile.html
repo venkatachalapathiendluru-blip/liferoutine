@@ -3,92 +3,81 @@
 {% block title %}Profile - LifeRoutine 360{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <h1>User Profile</h1>
-        <p class="text-muted">Manage your account settings and preferences</p>
+<div class="reveal">
+    <div class="mb-6">
+        <h1 class="section-title">
+            <i class="bi bi-person-circle text-sky-300 me-2"></i>User Profile
+        </h1>
+        <p class="section-subtitle">Manage your account settings and preferences</p>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h5>Profile Information</h5>
+    <div class="grid lg:grid-cols-3 gap-5">
+        <div class="g-card reveal reveal-1 lg:col-span-2">
+            <div class="modal-header mb-5">
+                <h3 class="modal-title"><i class="bi bi-sliders me-2 text-sky-300"></i>Profile Information</h3>
             </div>
-            <div class="card-body">
-                <form>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Username</label>
-                                <input type="text" class="form-control" value="{{ user.username }}" readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Email</label>
-                                <input type="email" class="form-control" value="{{ user.email|default:'Not set' }}">
-                            </div>
-                        </div>
+            <form method="post" action="" novalidate>
+                {% csrf_token %}
+
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div class="mb-4">
+                        <label class="g-label">Username</label>
+                        <input type="text" class="g-input w-full" value="{{ user.username }}" readonly>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Wake Up Time</label>
-                                <input type="time" class="form-control" value="{{ user.profile.wake_up_time|default:'' }}">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Sleep Time</label>
-                                <input type="time" class="form-control" value="{{ user.profile.sleep_time|default:'' }}">
-                            </div>
-                        </div>
+                    <div class="mb-4">
+                        <label class="g-label">Email</label>
+                        <input type="email" class="g-input w-full" value="{{ user.email|default:'' }}" name="email">
                     </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label class="form-label">Health Plan</label>
-                                <select class="form-select">
-                                    <option value="WEIGHT_LOSS" {% if user.profile.plan == 'WEIGHT_LOSS' %}selected{% endif %}>Weight Loss</option>
-                                    <option value="WEIGHT_GAIN" {% if user.profile.plan == 'WEIGHT_GAIN' %}selected{% endif %}>Weight Gain</option>
-                                    <option value="DIABETES" {% if user.profile.plan == 'DIABETES' %}selected{% endif %}>Diabetes</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label class="form-label">Water Target (Liters)</label>
-                                <input type="number" step="0.1" class="form-control" value="{{ user.profile.water_target_liters }}">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label class="form-label">Food Preference</label>
-                                <select class="form-select">
-                                    <option value="VEG" {% if user.profile.food_preference == 'VEG' %}selected{% endif %}>Vegetarian</option>
-                                    <option value="NON_VEG" {% if user.profile.food_preference == 'NON_VEG' %}selected{% endif %}>Non-Vegetarian</option>
-                                </select>
-                            </div>
-                        </div>
+                    <div class="mb-4">
+                        <label for="{{ form.wake_up_time.id_for_label }}" class="g-label">Wake Up Time</label>
+                        {{ form.wake_up_time }}
                     </div>
-                    <button type="submit" class="btn btn-primary">Update Profile</button>
-                </form>
-            </div>
+                    <div class="mb-4">
+                        <label for="{{ form.sleep_time.id_for_label }}" class="g-label">Sleep Time</label>
+                        {{ form.sleep_time }}
+                    </div>
+                    <div class="mb-4">
+                        <label for="{{ form.plan.id_for_label }}" class="g-label">Health Plan</label>
+                        {{ form.plan }}
+                    </div>
+                    <div class="mb-4">
+                        <label for="{{ form.water_target_liters.id_for_label }}" class="g-label">Water Target (Liters)</label>
+                        {{ form.water_target_liters }}
+                    </div>
+                    <div class="mb-4 sm:col-span-2">
+                        <label for="{{ form.food_preference.id_for_label }}" class="g-label">Food Preference</label>
+                        {{ form.food_preference }}
+                    </div>
+                </div>
+
+                <button type="submit" class="g-btn g-btn-solid">
+                    <i class="bi bi-check-lg me-1"></i>Update Profile
+                </button>
+            </form>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h5>Account Stats</h5>
+
+        <div class="g-card reveal reveal-2 h-fit">
+            <div class="modal-header mb-4">
+                <h3 class="modal-title"><i class="bi bi-graph-up me-2 text-emerald-300"></i>Account Stats</h3>
             </div>
-            <div class="card-body">
-                <p><strong>Member since:</strong> {{ user.date_joined|date:"M d, Y" }}</p>
-                <p><strong>Role:</strong> {{ user.profile.get_role_display }}</p>
-                <p><strong>Current Plan:</strong> {{ user.profile.get_plan_display }}</p>
-                <p><strong>Water Target:</strong> {{ user.profile.water_target_liters }}L</p>
-            </div>
+            <ul class="space-y-3 text-sm">
+                <li class="flex justify-between gap-3">
+                    <span class="text-slate-500">Member since</span>
+                    <span class="font-semibold text-white">{{ user.date_joined|date:"M d, Y" }}</span>
+                </li>
+                <li class="flex justify-between gap-3">
+                    <span class="text-slate-500">Role</span>
+                    <span class="font-semibold text-white">{{ user.profile.get_role_display }}</span>
+                </li>
+                <li class="flex justify-between gap-3">
+                    <span class="text-slate-500">Current Plan</span>
+                    <span class="font-semibold text-white">{{ user.profile.get_plan_display }}</span>
+                </li>
+                <li class="flex justify-between gap-3">
+                    <span class="text-slate-500">Water Target</span>
+                    <span class="font-semibold text-sky-300">{{ user.profile.water_target_liters }}L</span>
+                </li>
+            </ul>
         </div>
     </div>
 </div>

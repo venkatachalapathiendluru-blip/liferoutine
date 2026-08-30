@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_class %}with-sidebar{% endblock %}
+
+{% block topnav %}
+<header class="topnav">
+    <div class="flex items-center gap-3 min-w-0">
+        <button class="nav-icon-btn md:hidden" id="sidebarToggle" aria-label="Open navigation menu">
+            <i class="bi bi-list"></i>
+        </button>
+        <a class="brand min-w-0" href="/">
+            <i class="bi bi-heart-pulse-fill"></i>
+            <span class="truncate">LifeRoutine&nbsp;360</span>
+        </a>
+    </div>
+    <div class="ml-auto flex items-center gap-2">
+        {% block nav_actions %}{{ block.super }}{% endblock %}
+    </div>
+</header>
+{% endblock %}
+
+{% block shell %}
+<div class="md:pl-72 w-full min-h-screen">
+    <aside class="sidebar" id="sidebar">
+        <div class="px-2 pt-1 pb-2 border-b border-white/5 mb-2 md:hidden">
+            <a class="brand" href="/">
+                <i class="bi bi-heart-pulse-fill"></i>
+                <span>LifeRoutine 360</span>
+            </a>
+        </div>
+        <nav class="flex-1">
+            <div class="sidebar-group">My Tracks</div>
+            <a href="/" class="sidebar-link {% if request.path == '/' %}active{% endif %}" title="Daily meal planner">
+                <i class="bi bi-calendar-check"></i><span>Meal Planner</span>
+            </a>
+            <a href="/water/" class="sidebar-link {% if request.path == '/water/' %}active{% endif %}" title="Water intake tracker">
+                <i class="bi bi-droplet-fill"></i><span>Water Tracker</span>
+            </a>
+            <a href="/summary/" class="sidebar-link {% if request.path == '/summary/' %}active{% endif %}" title="Daily wellness summary">
+                <i class="bi bi-graph-up"></i><span>Daily Summary</span>
+            </a>
+            <a href="/food-admin/" class="sidebar-link {% if request.path == '/food-admin/' %}active{% endif %}" title="Food database & calorie calculator">
+                <i class="bi bi-egg-fried"></i><span>Food Admin</span>
+            </a>
+
+            <div class="sidebar-group">Account</div>
+            {% if user.is_authenticated %}
+            <a href="{% url 'accounts:profile' %}" class="sidebar-link" title="Your profile">
+                <i class="bi bi-person-circle"></i><span>Profile</span>
+            </a>
+            <a href="{% url 'accounts:logout' %}" class="sidebar-link" title="Sign out">
+                <i class="bi bi-box-arrow-right"></i><span>Logout</span>
+            </a>
+            {% else %}
+            <a href="{% url 'accounts:login' %}" class="sidebar-link" title="Sign in">
+                <i class="bi bi-box-arrow-in-right"></i><span>Sign In</span>
+            </a>
+            <a href="{% url 'accounts:register' %}" class="sidebar-link" title="Create an account">
+                <i class="bi bi-person-plus"></i><span>Create Account</span>
+            </a>
+            {% endif %}
+        </nav>
+        <div class="px-3 pt-3 mt-4 text-[0.68rem] text-slate-500 leading-relaxed border-t border-white/5">
+            <p class="mb-0">LifeRoutine 360 &mdash; your daily health companion.</p>
+        </div>
+    </aside>
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+    <main class="pt-20 pb-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    const toggle = document.getElementById('sidebarToggle');
+    if (!sidebar || !backdrop) return;
+
+    const open = () => { sidebar.classList.add('open'); backdrop.classList.add('show'); };
+    const close = () => { sidebar.classList.remove('open'); backdrop.classList.remove('show'); };
+
+    if (toggle) toggle.addEventListener('click', open);
+    backdrop.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+});
+</script>
+{% endblock %}

@@ -18,6 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
+    # Product pages (the main front-end, glued into Django)
+    path('', include('web.urls')),
+    # Django admin + experimental backend apps
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('planning/', include('planning.urls')),
