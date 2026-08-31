@@ -9,7 +9,7 @@
         <button class="nav-icon-btn md:hidden" id="sidebarToggle" aria-label="Open navigation menu">
             <i class="bi bi-list"></i>
         </button>
-        <a class="brand min-w-0" href="/">
+        <a class="brand min-w-0" href="/app/">
             <i class="bi bi-heart-pulse-fill"></i>
             <span class="truncate">LifeRoutine&nbsp;360</span>
         </a>
@@ -24,23 +24,23 @@
 <div class="md:pl-72 w-full min-h-screen">
     <aside class="sidebar" id="sidebar">
         <div class="px-2 pt-1 pb-2 border-b border-white/5 mb-2 md:hidden">
-            <a class="brand" href="/">
+            <a class="brand" href="/app/">
                 <i class="bi bi-heart-pulse-fill"></i>
                 <span>LifeRoutine 360</span>
             </a>
         </div>
         <nav class="flex-1">
             <div class="sidebar-group">My Tracks</div>
-            <a href="/" class="sidebar-link {% if request.path == '/' %}active{% endif %}" title="Daily meal planner">
+            <a href="/app/" class="sidebar-link {% if request.path == '/app/' %}active{% endif %}" title="Daily meal planner">
                 <i class="bi bi-calendar-check"></i><span>Meal Planner</span>
             </a>
-            <a href="/water/" class="sidebar-link {% if request.path == '/water/' %}active{% endif %}" title="Water intake tracker">
+            <a href="/app/water/" class="sidebar-link {% if request.path == '/app/water/' %}active{% endif %}" title="Water intake tracker">
                 <i class="bi bi-droplet-fill"></i><span>Water Tracker</span>
             </a>
-            <a href="/summary/" class="sidebar-link {% if request.path == '/summary/' %}active{% endif %}" title="Daily wellness summary">
+            <a href="/app/summary/" class="sidebar-link {% if request.path == '/app/summary/' %}active{% endif %}" title="Daily wellness summary">
                 <i class="bi bi-graph-up"></i><span>Daily Summary</span>
             </a>
-            <a href="/food-admin/" class="sidebar-link {% if request.path == '/food-admin/' %}active{% endif %}" title="Food database & calorie calculator">
+            <a href="/app/food-admin/" class="sidebar-link {% if request.path == '/app/food-admin/' %}active{% endif %}" title="Food database & calorie calculator">
                 <i class="bi bi-egg-fried"></i><span>Food Admin</span>
             </a>
 

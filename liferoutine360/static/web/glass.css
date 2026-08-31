@@ -1121,6 +1121,55 @@ h6.g-4, .lead { color: var(--txt) !important; }
 .g-message.error, .g-message.warning { border-left: 4px solid var(--bad); color: #ffd5da; }
 .g-message.info { border-left: 4px solid var(--accent); color: #cdecfd; }
 
+/* ==========================================================================
+   Marketing site (landing / features / pricing / about / contact)
+   ========================================================================== */
+.marketing-nav { gap: 2rem; }
+.marketing-links {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.marketing-links a {
+  padding: 0.45rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--txt-dim);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.marketing-links a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.marketing-links a.active { color: #0b0e13; background: linear-gradient(180deg,#f1f3f7,#c8ced8); }
+
+@media (max-width: 640px) {
+  .marketing-links { display: none; }
+}
+
+.marketing-main { min-height: 100vh; }
+.marketing-footer {
+  padding: 3rem 0 2rem;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  background: rgba(9,12,17,0.5);
+}
+.marketing-footer .footer-title {
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.9rem;
+}
+.marketing-footer a {
+  display: block;
+  color: var(--txt-dim);
+  font-size: 0.9rem;
+  padding: 0.25rem 0;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.marketing-footer a:hover { color: #fff; }
+
 /* ---- Responsive helpers & reduced motion -------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

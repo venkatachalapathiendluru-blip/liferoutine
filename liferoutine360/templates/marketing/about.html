@@ -1,0 +1,54 @@
+{% extends 'marketing/base.html' %}
+{% load static %}
+
+{% block title %}About — LifeRoutine 360{% endblock %}
+
+{% block head %}
+<style>
+  .about-hero { padding: 8rem 1.5rem 2rem; text-align: center; }
+  .about-hero h1 { font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 900; color: #fff; }
+  .about-hero p { color: #9aa3af; max-width: 58ch; margin: 1rem auto 0; line-height: 1.7; }
+  .about-body { max-width: 720px; margin: 0 auto; padding: 1.5rem 1.25rem 5rem; }
+  .about-body h2 { color: #fff; font-size: 1.3rem; font-weight: 800; margin: 2rem 0 0.8rem; }
+  .about-body p { color: #9aa3af; line-height: 1.7; }
+  .values { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+  .value { background: var(--glass); border: 1px solid var(--stroke); border-radius: 16px; padding: 1.3rem; }
+  .value i { font-size: 1.4rem; color: #7dd3fc; }
+  .value h3 { color: #fff; font-size: 0.98rem; font-weight: 800; margin: 0.6rem 0 0.3rem; }
+  .value p { color: #9aa3af; font-size: 0.86rem; line-height: 1.55; margin: 0; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="about-hero">
+  <h1>Our mission</h1>
+  <p>We believe lasting health comes from small, consistent daily habits. LifeRoutine 360 exists to make
+  building those habits effortless — giving you one calm, beautiful place to plan your day and understand
+  your health.</p>
+</section>
+<section class="about-body">
+  <h2>Why we built it</h2>
+  <p>Tracking meals, water and daily routines usually means juggling five different apps. We wanted a single
+  product that meets people where they are, respects their goals, and turns healthy choices into a seamless
+  part of everyday life.</p>
+
+  <h2>What we value</h2>
+  <div class="values">
+    <div class="value">
+      <i class="bi bi-heart-pulse"></i>
+      <h3>Health first</h3>
+      <p>Every feature is designed around real, sustainable wellbeing.</p>
+    </div>
+    <div class="value">
+      <i class="bi bi-shield-check"></i>
+      <h3>Privacy</h3>
+      <p>Your personal and health data is yours, protected and never sold.</p>
+    </div>
+    <div class="value">
+      <i class="bi bi-lightning-charge"></i>
+      <h3>Simplicity</h3>
+      <p>Powerful tools wrapped in an experience that's easy to love.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

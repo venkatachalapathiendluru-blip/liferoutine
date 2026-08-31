@@ -1,0 +1,100 @@
+{% extends 'marketing/base.html' %}
+{% load static %}
+
+{% block title %}Pricing — LifeRoutine 360{% endblock %}
+
+{% block head %}
+<style>
+  .pricing-hero { padding: 8rem 1.5rem 2rem; text-align: center; }
+  .pricing-hero h1 { font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 900; color: #fff; letter-spacing: -0.02em; }
+  .pricing-hero p { color: #9aa3af; margin: 1rem auto 0; line-height: 1.6; max-width: 55ch; }
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.4rem;
+    max-width: 1000px;
+    margin: 3rem auto 0;
+    padding: 0 1.25rem;
+  }
+  .plan-card {
+    background: var(--glass);
+    border: 1px solid var(--stroke);
+    border-radius: 22px;
+    padding: 2rem 1.8rem;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .plan-card.featured {
+    border-color: rgba(125,211,252,0.5);
+    background: linear-gradient(180deg, rgba(125,211,252,0.08), rgba(13,17,23,0.9));
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  }
+  .plan-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg,#f1f3f7,#c7cdd8);
+    color: #0b0e13;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 0.3rem 1rem;
+    border-radius: 9999px;
+  }
+  .plan-name { font-size: 1.05rem; font-weight: 800; color: #fff; }
+  .plan-desc { font-size: 0.85rem; color: #9aa3af; margin-top: 0.3rem; }
+  .plan-price { margin: 1.5rem 0; }
+  .plan-price .cur { font-size: 1.2rem; font-weight: 700; color: #7dd3fc; vertical-align: top; }
+  .plan-price .amt { font-size: 3rem; font-weight: 900; color: #fff; letter-spacing: -0.03em; }
+  .plan-price .per { color: #9aa3af; font-size: 0.9rem; }
+  .plan-features { list-style: none; padding: 0; margin: 0 0 1.6rem; flex: 1; }
+  .plan-features li { display: flex; gap: 0.6rem; padding: 0.45rem 0; font-size: 0.9rem; color: var(--txt-dim); }
+  .plan-features li i { color: #34d399; }
+  .plan-features li.disabled i { color: var(--txt-faint); }
+  .plan-features li.disabled { color: var(--txt-faint); text-decoration: line-through; text-decoration-color: rgba(255,255,255,0.15); }
+  .note { text-align:center; color: var(--txt-faint); font-size: 0.85rem; max-width: 70ch; margin: 0 auto; padding: 2.5rem 1.25rem 0; line-height: 1.6; }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="pricing-hero">
+  <h1>Simple, transparent pricing</h1>
+  <p>Start free and upgrade when you're ready. Every plan includes the full LifeRoutine 360 experience.</p>
+</section>
+
+<div class="plans-grid">
+  {% for plan in plans %}
+  <div class="plan-card {% if plan.featured %}featured{% endif %}">
+    {% if plan.featured %}<div class="plan-badge">Most Popular</div>{% endif %}
+    <div class="plan-name">{{ plan.name }}</div>
+    <div class="plan-desc">{{ plan.tagline }}</div>
+    <div class="plan-price">
+      <span class="cur">$</span><span class="amt">{{ plan.price }}</span><span class="per"> / {{ plan.billing }}</span>
+    </div>
+    <ul class="plan-features">
+      {% for feature in plan.features %}
+        {% if feature.enabled %}
+        <li><i class="bi bi-check-circle-fill"></i>{{ feature.text }}</li>
+        {% else %}
+        <li class="disabled"><i class="bi bi-dash-circle"></i>{{ feature.text }}</li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+    {% if plan.featured %}
+    <a href="{% url 'accounts:register' %}" class="g-btn g-btn-solid w-100" style="width:100%;">
+      <i class="bi bi-rocket-takeoff me-1"></i>Get Started
+    </a>
+    {% else %}
+    <a href="{% url 'accounts:register' %}" class="g-btn g-btn-ghost w-100" style="width:100%;">Choose {{ plan.name }}</a>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+
+<p class="note">
+  No hidden fees, cancel anytime. All personal and health data is stored securely and never shared.
+  Questions? <a href="/contact/" class="text-sky-300">Get in touch</a>.
+</p>
+{% endblock %}

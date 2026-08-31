@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'marketing',
     'web',
     'accounts',
 ]
@@ -147,3 +148,36 @@ else:
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Authentication
+LOGIN_URL = 'accounts:login'
+LOGIN_REDIRECT_URL = '/app/'
+
+# ── Google OAuth (Login with Google) ─────────────────────────────────────────
+# We use Google Identity Services (GIS) ID-token flow — the same approach as the
+# DevPrep project — which avoids the OAuth authorization-code redirect entirely,
+# so there is no redirect_uri_mismatch risk from the redirect step.
+#
+# IMPORTANT: You must register your OWN OAuth 2.0 Client ID for this exact origin
+# in Google Cloud Console, otherwise you'll get "Access blocked" / origin errors.
+# Credentials are read from environment variables, or from this project's .env file.
+
+def _read_env_file_values(path):
+    vals = {}
+    try:
+        with open(path) as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#') or '=' not in line:
+                    continue
+                k, _, v = line.partition('=')
+                vals[k.strip()] = v.strip().strip('"').strip("'")
+    except (OSError, IOError):
+        pass
+    return vals
+
+_oauth_env_vals = _read_env_file_values(BASE_DIR / '.env')
+
+# GIS only needs the client ID to verify the ID token (no secret, no redirect).
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', _oauth_env_vals.get('GOOGLE_CLIENT_ID', ''))
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', _oauth_env_vals.get('GOOGLE_CLIENT_SECRET', ''))

@@ -1,0 +1,50 @@
+{% if google_configured %}
+<div class="google-signin-wrap">
+    <div id="g_id_onload" data-client_id="{{ GOOGLE_CLIENT_ID }}"
+         data-callback="handleGoogleCredential"
+         data-auto_prompt="false">
+    </div>
+    <div id="gsi_button" class="flex items-center justify-center mb-4"></div>
+</div>
+<div class="flex items-center gap-3 my-4">
+    <div class="flex-1 h-px" style="background:rgba(255,255,255,0.08);"></div>
+    <span class="text-xs text-slate-500" style="letter-spacing:.08em;">OR</span>
+    <div class="flex-1 h-px" style="background:rgba(255,255,255,0.08);"></div>
+</div>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+window.googleAuthEndpoint = "{% url 'accounts:google_login' %}";
+window.googleAuthRedirect = "{% url 'web:meal_planner' %}";
+window.handleGoogleCredential = function (response) {
+    const credential = response && response.credential;
+    if (!credential) return;
+    fetch(window.googleAuthEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: credential })
+    })
+    .then(function (res) { return res.json().then(function (d) { return { ok: res.ok, d: d }; }); })
+    .then(function (_a) {
+        if (!_a.ok) {
+            alert('Google sign-in failed: ' + (_a.d && _a.d.error ? _a.d.error : 'unknown error'));
+            return;
+        }
+        window.location.href = _a.d && _a.d.redirect ? _a.d.redirect : window.googleAuthRedirect;
+    })
+    .catch(function () {
+        alert('Network error during Google sign-in. Please try again.');
+    });
+};
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof google === 'undefined' || !google.accounts) return;
+    google.accounts.id.initialize({
+        client_id: '{{ GOOGLE_CLIENT_ID }}',
+        callback: window.handleGoogleCredential
+    });
+    google.accounts.id.renderButton(
+        document.getElementById('gsi_button'),
+        { theme: 'outline', size: 'large', text: 'continue_with', shape: 'pill', width: 320 }
+    );
+});
+</script>
+{% endif %}
