@@ -1,0 +1,173 @@
+{% extends 'web/base.html' %}
+{% load static %}
+
+{% block title %}Daily Summary | LifeRoutine 360{% endblock %}
+
+{% block content %}
+<div class="reveal">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+        <div>
+            <h1 class="section-title">
+                <i class="bi bi-graph-up text-emerald-300 me-2"></i>Daily Summary
+            </h1>
+            <p class="section-subtitle">A snapshot of your meals, hydration and activity for any day.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <div>
+                <input type="date" id="summaryDate" class="g-input">
+            </div>
+            <button id="refreshSummary" class="g-btn g-btn-solid text-xs">
+                <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+            </button>
+            <button id="shareSummary" class="g-btn g-btn-ghost text-xs">
+                <i class="bi bi-share me-1"></i>Share
+            </button>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-5 mb-6">
+        <div class="g-card reveal reveal-1 text-center">
+            <h3 class="g-card-title justify-center">
+                <i class="bi bi-trophy text-amber-300 me-2"></i>Today's Performance
+            </h3>
+            <div class="score-display">
+                <div class="score-circle bg-primary text-white" id="scoreCircle">
+                    <span class="score-number h3" id="scoreNumber">0%</span>
+                </div>
+                <div class="score-label" id="scoreLabel">Loading...</div>
+            </div>
+        </div>
+
+        <div class="g-card reveal reveal-2 lg:col-span-2">
+            <div class="grid gap-4 md:grid-cols-2">
+                <div>
+                    <h3 class="g-card-title">
+                        <i class="bi bi-list-check me-2"></i>Activities
+                        <span class="badge bg-light text-primary ms-auto" id="activitiesScore">0%</span>
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3 text-center mb-3">
+                        <div class="stat-item">
+                            <div class="text-xs uppercase tracking-wider text-slate-500 mb-1">Planned</div>
+                            <div class="text-lg font-bold text-sky-300" id="plannedActivities">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="text-xs uppercase tracking-wider text-slate-500 mb-1">Completed</div>
+                            <div class="text-lg font-bold text-emerald-300" id="completedActivities">0</div>
+                        </div>
+                    </div>
+                    <div class="activity-list" id="activityList">
+                        <p class="no-data">No activity data available</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="g-card-title">
+                        <i class="bi bi-droplet-fill me-2"></i>Water Intake
+                        <span class="badge bg-light text-info ms-auto" id="waterScore">0%</span>
+                    </h3>
+                    <div class="grid grid-cols-3 gap-2 text-center mb-3">
+                        <div class="stat-item">
+                            <div class="text-xs text-slate-500 mb-1">Target</div>
+                            <div class="text-sm font-bold text-sky-300" id="waterTarget">0 ml</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="text-xs text-slate-500 mb-1">Consumed</div>
+                            <div class="text-sm font-bold text-emerald-300" id="waterConsumed">0 ml</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="text-xs text-slate-500 mb-1">Remaining</div>
+                            <div class="text-sm font-bold text-amber-300" id="waterRemaining">0 ml</div>
+                        </div>
+                    </div>
+                    <div class="progress mb-2" style="height: 20px;">
+                        <div class="progress-bar bg-info" id="waterProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <h3 class="g-card-title">
+                    <i class="bi bi-fire me-2"></i>Calories
+                    <span class="badge bg-light text-dark ms-auto" id="caloriesScore">Good</span>
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center mb-3">
+                    <div class="meal-stat">
+                        <div class="text-xs text-slate-500 mb-1">Breakfast</div>
+                        <div class="text-base font-bold" id="breakfastCalories">0 cal</div>
+                    </div>
+                    <div class="meal-stat">
+                        <div class="text-xs text-slate-500 mb-1">Lunch</div>
+                        <div class="text-base font-bold" id="lunchCalories">0 cal</div>
+                    </div>
+                    <div class="meal-stat">
+                        <div class="text-xs text-slate-500 mb-1">Dinner</div>
+                        <div class="text-base font-bold" id="dinnerCalories">0 cal</div>
+                    </div>
+                    <div class="meal-stat">
+                        <div class="text-xs text-slate-500 mb-1">Snacks</div>
+                        <div class="text-base font-bold" id="snacksCalories">0 cal</div>
+                    </div>
+                </div>
+                <p class="text-sm mb-0">Total: <span class="font-bold text-sky-300" id="totalCalories">0 cal</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="g-card reveal reveal-2 mb-6" style="background: rgba(255,255,255,0.05);">
+        <h3 class="g-card-title">
+            <i class="bi bi-lightbulb text-amber-300 me-2"></i>Health Insight
+        </h3>
+        <div id="healthMessage">
+            <p class="text-slate-400 mb-0">Loading your personalized health message...</p>
+        </div>
+    </div>
+
+    <div class="g-card reveal reveal-3 mb-6">
+        <h3 class="g-card-title">
+            <i class="bi bi-bar-chart text-sky-300 me-2"></i>Detailed Breakdown
+        </h3>
+        <div class="g-tabs">
+            <button class="tab-btn active" data-tab="routine">
+                <i class="bi bi-list-check me-1"></i>Routine
+            </button>
+            <button class="tab-btn" data-tab="nutrition">
+                <i class="bi bi-egg-fried me-1"></i>Nutrition
+            </button>
+            <button class="tab-btn" data-tab="hydration">
+                <i class="bi bi-droplet me-1"></i>Hydration
+            </button>
+        </div>
+
+        <div class="tab-content active" id="routine-tab">
+            <div class="routine-breakdown" id="routineBreakdown">
+                <p class="text-slate-400">Generating routine breakdown...</p>
+            </div>
+        </div>
+        <div class="tab-content" id="nutrition-tab">
+            <div class="nutrition-breakdown" id="nutritionBreakdown">
+                <p class="text-slate-400">Generating nutrition breakdown...</p>
+            </div>
+        </div>
+        <div class="tab-content" id="hydration-tab">
+            <div class="hydration-breakdown" id="hydrationBreakdown">
+                <p class="text-slate-400">Generating hydration breakdown...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="g-card reveal reveal-4">
+        <h3 class="g-card-title">
+            <i class="bi bi-stars text-emerald-300 me-2"></i>Recommendations for Tomorrow
+        </h3>
+        <div class="recommendation-list" id="recommendationList">
+            <p class="text-slate-400">Generating personalized recommendations...</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'web/food-models.js' %}"></script>
+    <script src="{% static 'web/water-intake.js' %}"></script>
+    <script src="{% static 'web/summary.js' %}"></script>
+{% endblock %}

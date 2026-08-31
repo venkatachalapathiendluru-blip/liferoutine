@@ -1,0 +1,23 @@
+# --- Sensitive files (never commit these) ---
+cookies.txt
+csrf.txt
+.env
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# --- Django / backend ---
+db.sqlite3
+staticfiles/
+
+# --- Deploy tooling ---
+.vercel/
+
+# --- Editor / OS ---
+.playwright-mcp/
+node_modules/
+.DS_Store

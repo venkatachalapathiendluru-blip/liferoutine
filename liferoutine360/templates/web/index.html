@@ -1,0 +1,62 @@
+{% extends 'web/base.html' %}
+{% load static %}
+
+{% block title %}Daily Meal Planner | LifeRoutine 360{% endblock %}
+
+{% block content %}
+<div class="reveal">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+        <div>
+            <h1 class="section-title">
+                <i class="bi bi-calendar-check text-sky-300 me-2"></i>Daily Meal Planner
+            </h1>
+            <p class="section-subtitle">Plan meals, snacks and water intake across any date range.</p>
+        </div>
+        <a href="/app/water/" class="g-btn g-btn-accent text-xs self-start md:self-auto">
+            <i class="bi bi-droplet-fill me-1"></i>Open Water Tracker
+        </a>
+    </div>
+
+    <div class="g-card reveal reveal-1 mb-6">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:items-end">
+            <div>
+                <label for="startDate" class="g-label">Start Date</label>
+                <input type="date" id="startDate" class="g-input">
+            </div>
+            <div>
+                <label for="dateRange" class="g-label">Date Range</label>
+                <select id="dateRange" class="g-select">
+                    <option value="1">1 Day</option>
+                    <option value="7">7 Days</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+            <div id="customRange" style="display: none;">
+                <label for="endDate" class="g-label">End Date</label>
+                <input type="date" id="endDate" class="g-input">
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <button id="generateBtn" class="g-btn g-btn-solid">
+                    <i class="bi bi-calendar-plus me-1"></i>Generate
+                </button>
+                <button id="saveBtn" class="g-btn g-btn-accent">
+                    <i class="bi bi-save me-1"></i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="plannerContainer" class="grid gap-5">
+        <div class="g-card text-center py-10">
+            <i class="bi bi-calendar-week display-4 d-block mb-3 text-slate-500"></i>
+            <p class="text-slate-400 mb-0">Pick a date range and hit <strong class="text-white">Generate</strong> to plan your days.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'web/food-models.js' %}"></script>
+    <script src="{% static 'web/water-intake.js' %}"></script>
+    <script src="{% static 'web/script.js' %}"></script>
+{% endblock %}

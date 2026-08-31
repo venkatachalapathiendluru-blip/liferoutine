@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - LifeRoutine 360{% endblock %}
+
+{% block topnav %}{% endblock %}
+
+{% block content %}
+<div class="min-h-[calc(100dvh-64px)] flex items-center justify-center py-10">
+    <div class="w-full max-w-md">
+        <div class="g-card p-8 sm:p-10 reveal">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/5 border border-white/10 mb-4">
+                    <i class="bi bi-heart-pulse-fill text-sky-300" style="font-size: 1.6rem;"></i>
+                </div>
+                <h2 class="text-2xl font-extrabold text-white tracking-tight">Welcome Back</h2>
+                <p class="text-slate-400 text-sm mt-1">Sign in to continue your health journey</p>
+            </div>
+
+            <form method="post" id="loginForm" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="g-message error mb-4">{{ form.non_field_errors|join:", " }}</div>
+                {% endif %}
+
+                {% include 'accounts/_google_signin.html' %}
+
+                <div class="mb-4">
+                    <label for="{{ form.username.id_for_label }}" class="g-label">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="text-rose-400 text-xs mt-1">{{ form.username.errors|join:", " }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-4">
+                    <label for="{{ form.password.id_for_label }}" class="g-label">Password</label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                        <div class="text-rose-400 text-xs mt-1">{{ form.password.errors|join:", " }}</div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="g-btn g-btn-solid w-full !py-3 mt-2">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                </button>
+            </form>
+
+            <p class="text-center text-slate-400 text-sm mt-6 mb-0">
+                Don't have an account?
+                <a href="{% url 'accounts:register' %}" class="text-sky-300 font-semibold hover:text-white transition-colors">Sign up here</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('loginForm');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', function(e) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Signing In...';
+        setTimeout(function() {
+            if (!form.submitting) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Sign In';
+            }
+        }, 4000);
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+# Python dependencies for the LifeRoutine 360 Django project.
+#
+# Python version: 3.10+ (recommended: 3.10 - 3.13)
+#
+# Install with:  pip install -r requirements.txt
+#   inside a virtual environment:  python -m venv .venv && source .venv/bin/activate
+#
+# SQLite (used locally) ships with Python - no extra package needed.
+
+Django==5.2.10
+whitenoise==6.8.2

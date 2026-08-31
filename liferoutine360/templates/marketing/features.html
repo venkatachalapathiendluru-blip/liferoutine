@@ -1,0 +1,114 @@
+{% extends 'marketing/base.html' %}
+{% load static %}
+
+{% block title %}Features — LifeRoutine 360{% endblock %}
+
+{% block head %}
+<style>
+  .features-hero { padding: 8rem 1.5rem 3rem; text-align: center; }
+  .features-hero h1 { font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 900; color: #fff; letter-spacing: -0.02em; }
+  .features-hero p { color: #9aa3af; max-width: 55ch; margin: 1rem auto 0; line-height: 1.6; }
+  .row-wrap { max-width: 1100px; margin: 0 auto; padding: 3rem 1.25rem; }
+  .feature-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+    align-items: center;
+    margin-bottom: 2.5rem;
+  }
+  @media (min-width: 768px) { .feature-row { grid-template-columns: 1fr 1fr; } }
+  .feature-row.reverse .feature-media { order: -1; }
+  .feature-text h2 { font-size: 1.5rem; font-weight: 900; color: #fff; margin-bottom: 0.7rem; }
+  .feature-text p { color: #9aa3af; line-height: 1.65; margin-bottom: 1.2rem; }
+  .feature-points { list-style: none; padding: 0; margin: 0; }
+  .feature-points li { display: flex; gap: 0.7rem; align-items: flex-start; padding: 0.5rem 0; color: var(--txt-dim); font-size: 0.92rem; }
+  .feature-points li i { color: #34d399; margin-top: 0.15rem; }
+  .feature-media {
+    background: var(--glass);
+    border: 1px solid var(--stroke);
+    border-radius: 20px;
+    padding: 1.6rem;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .feature-media .big-icon {
+    width: 92px; height: 92px; border-radius: 24px;
+    display:flex; align-items:center; justify-content:center;
+    font-size: 2.4rem; color:#7dd3fc;
+    background: rgba(125,211,252,0.1); border:1px solid rgba(125,211,252,0.25);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="features-hero">
+  <h1>Powerful features, beautifully simple</h1>
+  <p>Everything you need to plan, track and understand your daily health — wrapped in one elegant experience.</p>
+</section>
+
+<section class="row-wrap">
+  <div class="feature-row">
+    <div class="feature-text">
+      <h2><i class="bi bi-calendar-check me-2 text-sky-300"></i>Daily Meal Planner</h2>
+      <p>Build your meal plan for a single day or a whole week. Each meal is calorie-aware and organized by
+      your daily rhythm — from early morning to dinner.</p>
+      <ul class="feature-points">
+        <li><i class="bi bi-check-circle-fill"></i> Plan across any custom date range</li>
+        <li><i class="bi bi-check-circle-fill"></i> Live calorie totals per meal and per day</li>
+        <li><i class="bi bi-check-circle-fill"></i> Your plans saved and restored automatically</li>
+      </ul>
+    </div>
+    <div class="feature-media"><div class="big-icon"><i class="bi bi-calendar-check"></i></div></div>
+  </div>
+
+  <div class="feature-row reverse">
+    <div class="feature-text">
+      <h2><i class="bi bi-droplet-fill me-2 text-sky-300"></i>Water Tracker</h2>
+      <p>Generate an intelligent hydration schedule based on your wake-up time and target, then log intake
+      in a single tap.</p>
+      <ul class="feature-points">
+        <li><i class="bi bi-check-circle-fill"></i> Auto-generated daily drinking schedule</li>
+        <li><i class="bi bi-check-circle-fill"></i> One-tap and custom water logging</li>
+        <li><i class="bi bi-check-circle-fill"></i> Real-time progress toward your goal</li>
+      </ul>
+    </div>
+    <div class="feature-media"><div class="big-icon"><i class="bi bi-droplet-fill"></i></div></div>
+  </div>
+
+  <div class="feature-row">
+    <div class="feature-text">
+      <h2><i class="bi bi-graph-up-arrow me-2 text-emerald-300"></i>Daily Health Summary</h2>
+      <p>End each day with a clear picture: a wellness score across nutrition, hydration and activity,
+      plus personalized recommendations for tomorrow.</p>
+      <ul class="feature-points">
+        <li><i class="bi bi-check-circle-fill"></i> Daily performance score out of 100%</li>
+        <li><i class="bi bi-check-circle-fill"></i> Nutrition, routine &amp; hydration breakdown</li>
+        <li><i class="bi bi-check-circle-fill"></i> Actionable next-day recommendations</li>
+      </ul>
+    </div>
+    <div class="feature-media"><div class="big-icon"><i class="bi bi-graph-up-arrow"></i></div></div>
+  </div>
+
+  <div class="feature-row reverse">
+    <div class="feature-text">
+      <h2><i class="bi bi-egg-fried me-2 text-amber-300"></i>Food &amp; Calorie Intelligence</h2>
+      <p>Browse a rich food database, manage ingredients, and use the built-in calorie calculator to
+      build balanced meals with confidence.</p>
+      <ul class="feature-points">
+        <li><i class="bi bi-check-circle-fill"></i> Searchable food &amp; ingredient catalogue</li>
+        <li><i class="bi bi-check-circle-fill"></i> Meal-level and daily calorie calculator</li>
+        <li><i class="bi bi-check-circle-fill"></i> Extensible food library</li>
+      </ul>
+    </div>
+    <div class="feature-media"><div class="big-icon"><i class="bi bi-egg-fried"></i></div></div>
+  </div>
+</section>
+
+<section style="padding: 2rem 1.25rem 4rem; text-align:center;">
+  <a href="{% url 'accounts:register' %}" class="g-btn g-btn-solid" style="font-size:1rem; padding:0.9rem 1.7rem;">
+    <i class="bi bi-rocket-takeoff me-1"></i>Try It Free
+  </a>
+</section>
+{% endblock %}
