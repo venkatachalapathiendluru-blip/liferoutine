@@ -1,0 +1,233 @@
+/* ============================================================================
+   LifeRoutine 360 — Landing Page Styles
+   Premium, modern Bento Grid UI with glassmorphism effects
+   ========================================================================== */
+
+/* ---- Bento Grid Cards ---------------------------------------------------- */
+.bento-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 28px;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.bento-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(125, 211, 252, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease-out;
+}
+
+.bento-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(125, 211, 252, 0.3);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.bento-card:hover::before {
+    opacity: 1;
+}
+
+/* ---- Gradient Text ------------------------------------------------------ */
+.bg-clip-text.text-transparent {
+    background-size: 200% 200%;
+    animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ---- Reveal Animations -------------------------------------------------- */
+.reveal {
+    animation: revealFadeUp 0.8s ease-out forwards;
+}
+
+.reveal-1 {
+    animation-delay: 0.1s;
+}
+
+.reveal-2 {
+    animation-delay: 0.2s;
+}
+
+@keyframes revealFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---- Button Styles ------------------------------------------------------ */
+.btn-gradient {
+    background: linear-gradient(135deg, #7dd3fc 0%, #0ea5e9 100%);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(125, 211, 252, 0.3);
+}
+
+.btn-gradient:active {
+    transform: translateY(0);
+}
+
+/* ---- Glass Effect Enhancement ------------------------------------------- */
+.glass-overlay {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 100%);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ---- Hero Section Enhancements ------------------------------------------ */
+.hero-gradient-bg {
+    background: linear-gradient(135deg, rgba(125, 211, 252, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%);
+    border-radius: 24px;
+}
+
+/* ---- Feature Grid Responsive -------------------------------------------- */
+@media (max-width: 1024px) {
+    .grid {
+        grid-auto-rows: auto;
+    }
+
+    .lg\:col-span-2 {
+        grid-column: span 2;
+    }
+
+    .lg\:row-span-2 {
+        grid-row: span 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .lg\:col-span-2 {
+        grid-column: span 1;
+    }
+
+    .bento-card {
+        padding: 20px;
+    }
+
+    .bento-card h3 {
+        font-size: 1.125rem;
+    }
+
+    .bento-card p {
+        font-size: 0.875rem;
+    }
+}
+
+/* ---- Section Spacing ---------------------------------------------------- */
+section {
+    position: relative;
+    z-index: 1;
+}
+
+/* ---- Icon Badge Animation ----------------------------------------------- */
+.icon-badge {
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* ---- Smooth Transitions ------------------------------------------------- */
+a, button, .group {
+    transition: all 0.3s ease-out;
+}
+
+/* ---- Counter Animation -------------------------------------------------- */
+.counter {
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- Navbar Sticky Scroll ------------------------------------------------ */
+nav {
+    animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---- Card Shadow Layers ------------------------------------------------- */
+.shadow-premium {
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.2),
+        0 0 60px rgba(125, 211, 252, 0.1);
+}
+
+/* ---- Text Overflow and Truncation --------------------------------------- */
+.line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* ---- Mobile Navigation Adjustments -------------------------------------- */
+@media (max-width: 640px) {
+    nav {
+        padding: 0.75rem 1rem;
+    }
+
+    section {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    h1 {
+        font-size: 2.25rem;
+    }
+
+    h2 {
+        font-size: 1.875rem;
+    }
+}
+
+/* ---- Accessibility ------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .bento-card,
+    nav,
+    .icon-badge {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* ---- Print Styles ------------------------------------------------------- */
+@media print {
+    nav,
+    footer {
+        display: none;
+    }
+}
