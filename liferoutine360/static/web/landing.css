@@ -3,6 +3,31 @@
    Premium, modern Bento Grid UI with glassmorphism effects
    ========================================================================== */
 
+body {
+    background:
+        radial-gradient(circle at top left, rgba(34, 211, 238, 0.14), transparent 24%),
+        radial-gradient(circle at bottom right, rgba(96, 165, 250, 0.14), transparent 26%),
+        linear-gradient(180deg, rgba(4, 10, 18, 0.88), rgba(4, 10, 18, 0.94));
+    color: #edf6ff;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(180deg, rgba(3, 7, 12, 0.50) 0%, rgba(3, 7, 12, 0.70) 32%, rgba(3, 7, 12, 0.88) 100%),
+        url('/static/web/wellness-bg.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    background-attachment: fixed;
+    filter: saturate(1.08) contrast(1.06) brightness(0.8);
+    z-index: -3;
+    pointer-events: none;
+}
+
 /* ---- Bento Grid Cards ---------------------------------------------------- */
 .bento-card {
     background: rgba(255, 255, 255, 0.05);
