@@ -1,6 +1,11 @@
 from django.shortcuts import render
 
 
+def landing(request):
+    """Premium landing page - public-facing entry point."""
+    return render(request, 'web/landing.html')
+
+
 def meal_planner(request):
     """Main product page: daily meal planner."""
     return render(request, 'web/index.html')

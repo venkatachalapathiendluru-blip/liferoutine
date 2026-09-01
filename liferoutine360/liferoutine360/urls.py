@@ -19,8 +19,9 @@ from django.urls import path, include
 
 urlpatterns = [
     # Product pages (the main front-end, glued into Django)
-    path('', include('web.urls')),
+    path('', include('web.urls')),# this i web app connection  means that is bussiness logic application name  
     # Django admin + accounts
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
+    path('accounts/', include('accounts.urls')),# thisis accounts connecting 
 ]
+#try to  understand the project by runing , like which is home page , waht happening based on th url that will helps you understand the django python,

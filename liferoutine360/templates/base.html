@@ -44,12 +44,12 @@
 
     {% block topnav %}
     <header class="topnav">
-        <a class="brand" href="/">
+        <a class="brand" href="{% url 'web:meal_planner' %}">
             <i class="bi bi-heart-pulse-fill"></i>
             <span>LifeRoutine&nbsp;360</span>
         </a>
         <nav class="hidden md:flex items-center gap-1">
-            <a href="/" class="g-btn g-btn-ghost text-xs">Meal Planner</a>
+            <a href="{% url 'web:meal_planner' %}" class="g-btn g-btn-ghost text-xs">Meal Planner</a>
             <a href="/water/" class="g-btn g-btn-ghost text-xs">Water</a>
         </nav>
         <div class="ml-auto flex items-center gap-2">
