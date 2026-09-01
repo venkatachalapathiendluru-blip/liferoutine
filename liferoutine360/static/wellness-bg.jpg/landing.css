@@ -45,12 +45,12 @@ body::before {
     position: fixed;
     inset: 0;
     background-image:
-        linear-gradient(180deg, rgba(4, 8, 15, 0.55) 0%, rgba(4, 8, 15, 0.72) 28%, rgba(4, 8, 15, 0.82) 100%),
-        url('https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1800&q=80');
+        linear-gradient(180deg, rgba(4, 8, 15, 0.5) 0%, rgba(4, 8, 15, 0.62) 25%, rgba(4, 8, 15, 0.7) 100%),
+        url('/static/wellness-bg.jpg/wellness-bg.jpg');
     background-repeat: no-repeat;
-    background-position: center center;
+    background-position: center 30%;
     background-size: cover;
-    filter: saturate(1.08) contrast(1.06) brightness(0.78);
+    filter: saturate(1.1) contrast(1.06);
     z-index: -3;
 }
 

@@ -25,3 +25,4 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),# thisis accounts connecting 
 ]
 #try to  understand the project by runing , like which is home page , waht happening based on th url that will helps you understand the django python,
+
