@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block shell %}
-<div class="md:pl-72 w-full min-h-screen">
+<div class="desktop-shell w-full min-h-screen">
     <aside class="sidebar" id="sidebar">
         <div class="px-2 pt-1 pb-2 border-b border-white/5 mb-2 md:hidden">
             <a class="brand" href="/">
@@ -29,7 +29,7 @@
                 <span>LifeRoutine 360</span>
             </a>
         </div>
-        <nav class="flex-1">
+        <nav class="flex-1 sidebar-nav">
             <div class="sidebar-group">My Tracks</div>
             <a href="/" class="sidebar-link {% if request.path == '/' %}active{% endif %}" title="Daily meal planner">
                 <i class="bi bi-calendar-check"></i><span>Meal Planner</span>
@@ -40,9 +40,18 @@
             <a href="/summary/" class="sidebar-link {% if request.path == '/summary/' %}active{% endif %}" title="Daily wellness summary">
                 <i class="bi bi-graph-up"></i><span>Daily Summary</span>
             </a>
-            <a href="/food-admin/" class="sidebar-link {% if request.path == '/food-admin/' %}active{% endif %}" title="Food database & calorie calculator">
-                <i class="bi bi-egg-fried"></i><span>Food Admin</span>
-            </a>
+            <div class="sidebar-parent">
+                <a href="/food-admin/" class="sidebar-link sidebar-link-parent {% if request.path == '/food-admin/' %}active{% endif %}" title="Food database & calorie calculator">
+                    <i class="bi bi-egg-fried"></i><span>Food Admin</span><span class="sidebar-caret">▾</span>
+                </a>
+                <div class="sidebar-subnav" aria-label="Food Admin sub-items">
+                    <a href="/food-admin/" class="sidebar-subitem">Food Items</a>
+                    <a href="/food-admin/" class="sidebar-subitem">Categories</a>
+                    <a href="/food-admin/" class="sidebar-subitem">Meal Plans</a>
+                    <a href="/food-admin/" class="sidebar-subitem">Recipes</a>
+                    <a href="/food-admin/" class="sidebar-subitem">Nutritional Info</a>
+                </div>
+            </div>
 
             <div class="sidebar-group">Account</div>
             {% if user.is_authenticated %}
