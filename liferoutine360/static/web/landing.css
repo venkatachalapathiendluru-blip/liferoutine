@@ -1,122 +1,47 @@
-/* ==========================================================
+/* ============================================================================
    LifeRoutine 360 — Landing Page Styles
-   Premium wellness SaaS UI with a background image and refined motion
-   ========================================================== */
+   Premium, modern Bento Grid UI with glassmorphism effects
+   ========================================================================== */
 
-:root {
-    --bg0: #050b14;
-    --bg1: #0b1220;
-    --card: rgba(15, 23, 42, 0.45);
-    --card-strong: rgba(15, 23, 42, 0.7);
-    --border: rgba(148, 163, 184, 0.2);
-    --text: #edf6ff;
-    --muted: #c3d1e7;
-    --cyan: #67e8f9;
-    --blue: #60a5fa;
-    --teal: #5eead4;
-    --purple: #a78bfa;
-    --green: #86efac;
-    --shadow: 0 24px 80px rgba(2, 6, 23, 0.58);
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
+/* ---- Bento Grid Cards ---------------------------------------------------- */
+.bento-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 28px;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     position: relative;
-    background:
-        radial-gradient(circle at 15% 15%, rgba(34, 211, 238, 0.18), transparent 22%),
-        radial-gradient(circle at 80% 20%, rgba(96, 165, 250, 0.2), transparent 22%),
-        radial-gradient(circle at 50% 80%, rgba(16, 185, 129, 0.12), transparent 30%),
-        linear-gradient(180deg, rgba(5, 11, 20, 0.82), rgba(5, 11, 20, 0.9));
-    color: var(--text);
-    overflow-x: hidden;
-    min-height: 100vh;
-    font-family: 'Inter', 'Segoe UI', sans-serif;
+    overflow: hidden;
 }
 
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background-image:
-        linear-gradient(180deg, rgba(4, 8, 15, 0.55) 0%, rgba(4, 8, 15, 0.72) 28%, rgba(4, 8, 15, 0.82) 100%),
-        url('https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1800&q=80');
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-    filter: saturate(1.08) contrast(1.06) brightness(0.78);
-    z-index: -3;
+.bento-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(125, 211, 252, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease-out;
 }
 
-body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.12), transparent 38%, rgba(59, 130, 246, 0.12));
-    pointer-events: none;
-    z-index: -2;
+.bento-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(125, 211, 252, 0.3);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
-img,
-svg {
-    display: block;
-    max-width: 100%;
+.bento-card:hover::before {
+    opacity: 1;
 }
 
-section {
-    position: relative;
-    z-index: 1;
-    padding-block: clamp(4rem, 7vw, 7rem);
-}
-
-nav {
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    background: rgba(2, 6, 23, 0.46);
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
-}
-
-nav .max-w-7xl {
-    position: relative;
-}
-
-nav a,
-nav button {
-    line-height: 1;
-}
-
-#mobile-menu {
-    animation: slideDown 0.24s ease-out;
-}
-
-#mobile-menu.hidden {
-    display: none;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-8px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes floatDrift {
-    0%, 100% {
-        transform: translate3d(0, 0, 0) scale(1);
-    }
-    50% {
-        transform: translate3d(18px, -12px, 0) scale(1.04);
-    }
+/* ---- Gradient Text ------------------------------------------------------ */
+.bg-clip-text.text-transparent {
+    background-size: 200% 200%;
+    animation: gradientShift 8s ease infinite;
 }
 
 @keyframes gradientShift {
@@ -125,194 +50,84 @@ nav button {
     100% { background-position: 0% 50%; }
 }
 
-@keyframes pulseSoft {
-    0%, 100% { opacity: 0.6; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.08); }
-}
-
-.landing-page .orb {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(75px);
-    opacity: 0.4;
-    pointer-events: none;
-    z-index: -1;
-    animation: floatDrift 18s ease-in-out infinite alternate;
-}
-
-.landing-page .orb-a {
-    width: 24rem;
-    height: 24rem;
-    left: -5rem;
-    top: 8rem;
-    background: rgba(34, 211, 238, 0.18);
-}
-
-.landing-page .orb-b {
-    width: 28rem;
-    height: 28rem;
-    right: -4rem;
-    top: 10rem;
-    background: rgba(96, 165, 250, 0.18);
-    animation-delay: 2s;
-}
-
-.landing-page .orb-c {
-    width: 22rem;
-    height: 22rem;
-    left: 28%;
-    bottom: 3rem;
-    background: rgba(45, 212, 191, 0.16);
-    animation-delay: 4s;
-}
-
-.bg-clip-text.text-transparent {
-    background-size: 200% 200%;
-    animation: gradientShift 10s ease infinite;
-}
-
+/* ---- Reveal Animations -------------------------------------------------- */
 .reveal {
-    opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    animation: revealFadeUp 0.8s ease-out forwards;
 }
 
 .reveal-1 {
-    transition-delay: 0.08s;
+    animation-delay: 0.1s;
 }
 
-.bento-card {
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: 1.25rem;
-    background: rgba(15, 23, 42, 0.46);
-    border: 1px solid rgba(148, 163, 184, 0.16);
-    border-radius: 22px;
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    box-shadow: var(--shadow);
-    transition: transform 0.28s ease, border-color 0.28s ease, background 0.28s ease, box-shadow 0.28s ease;
+.reveal-2 {
+    animation-delay: 0.2s;
 }
 
-.bento-card::before {
-    content: "";
-    position: absolute;
-    inset: auto -18% -30% auto;
-    width: 190px;
-    height: 190px;
-    background: radial-gradient(circle, rgba(125, 211, 252, 0.14) 0%, transparent 65%);
-    pointer-events: none;
-}
-
-.bento-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(103, 232, 249, 0.38);
-    box-shadow: 0 22px 70px rgba(8, 15, 32, 0.5), 0 0 24px rgba(96, 165, 250, 0.2);
-    background: rgba(15, 23, 42, 0.56);
-}
-
-.bento-card h3,
-.bento-card p,
-.bento-card span {
-    position: relative;
-    z-index: 1;
-}
-
-#mobile-menu-btn {
-    min-width: 2.8rem;
-    min-height: 2.8rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
-}
-
-#mobile-menu-btn:active {
-    background: rgba(255, 255, 255, 0.08);
-}
-
-a,
-button,
-.group {
-    transition: all 0.28s ease-out;
-}
-
-section .max-w-6xl,
-section .max-w-4xl,
-section .max-w-7xl {
-    width: min(100%, 72rem);
-}
-
-.hero-badge {
-    border-color: rgba(103, 232, 249, 0.2);
-    background: rgba(15, 23, 42, 0.38);
-    box-shadow: inset 0 0 18px rgba(125, 211, 252, 0.08);
-}
-
-.hero-badge .dot {
-    animation: pulseSoft 2.2s ease-in-out infinite;
-}
-
-.landing-page h1 {
-    letter-spacing: -0.055em;
-    text-wrap: balance;
-}
-
-.landing-page h2,
-.landing-page h3,
-.landing-page h4 {
-    text-wrap: balance;
-}
-
-.landing-page .btn-primary,
-.landing-page .btn-secondary {
-    box-shadow: 0 18px 32px rgba(15, 23, 42, 0.28);
-}
-
-.landing-page .btn-primary:hover {
-    box-shadow: 0 18px 38px rgba(59, 130, 246, 0.38), 0 0 20px rgba(103, 232, 249, 0.22);
-}
-
-.landing-page .btn-secondary:hover {
-    border-color: rgba(103, 232, 249, 0.4);
-    box-shadow: 0 18px 30px rgba(15, 23, 42, 0.2);
-}
-
-@media (min-width: 640px) {
-    .bento-card {
-        padding: 1.5rem;
+@keyframes revealFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-@media (min-width: 1024px) {
-    .bento-card {
-        padding: 1.6rem;
+/* ---- Button Styles ------------------------------------------------------ */
+.btn-gradient {
+    background: linear-gradient(135deg, #7dd3fc 0%, #0ea5e9 100%);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(125, 211, 252, 0.3);
+}
+
+.btn-gradient:active {
+    transform: translateY(0);
+}
+
+/* ---- Glass Effect Enhancement ------------------------------------------- */
+.glass-overlay {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 100%);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ---- Hero Section Enhancements ------------------------------------------ */
+.hero-gradient-bg {
+    background: linear-gradient(135deg, rgba(125, 211, 252, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%);
+    border-radius: 24px;
+}
+
+/* ---- Feature Grid Responsive -------------------------------------------- */
+@media (max-width: 1024px) {
+    .grid {
+        grid-auto-rows: auto;
+    }
+
+    .lg\:col-span-2 {
+        grid-column: span 2;
+    }
+
+    .lg\:row-span-2 {
+        grid-row: span 1;
     }
 }
 
-@media (min-width: 640px) and (max-width: 1023px) {
-    body::before {
-        background-position: center 20%;
-    }
-}
-
-@media (max-width: 767px) {
-    body::before {
-        background-position: center 14%;
-        background-size: cover;
-    }
-
-    section {
-        padding-block: 4.25rem;
+@media (max-width: 768px) {
+    .lg\:col-span-2 {
+        grid-column: span 1;
     }
 
     .bento-card {
-        padding: 1.1rem;
+        padding: 20px;
     }
 
     .bento-card h3 {
-        font-size: 1.05rem;
+        font-size: 1.125rem;
     }
 
     .bento-card p {
@@ -320,111 +135,96 @@ section .max-w-7xl {
     }
 }
 
+/* ---- Section Spacing ---------------------------------------------------- */
+section {
+    position: relative;
+    z-index: 1;
+}
+
+/* ---- Icon Badge Animation ----------------------------------------------- */
+.icon-badge {
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* ---- Smooth Transitions ------------------------------------------------- */
+a, button, .group {
+    transition: all 0.3s ease-out;
+}
+
+/* ---- Counter Animation -------------------------------------------------- */
+.counter {
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- Navbar Sticky Scroll ------------------------------------------------ */
+nav {
+    animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---- Card Shadow Layers ------------------------------------------------- */
+.shadow-premium {
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.2),
+        0 0 60px rgba(125, 211, 252, 0.1);
+}
+
+/* ---- Text Overflow and Truncation --------------------------------------- */
+.line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* ---- Mobile Navigation Adjustments -------------------------------------- */
 @media (max-width: 640px) {
-    nav .max-w-7xl {
-        padding-left: 0.7rem;
-        padding-right: 0.7rem;
+    nav {
+        padding: 0.75rem 1rem;
     }
 
-    nav .h-16,
-    nav .sm\:h-\[72px\] {
-        height: 4rem;
+    section {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
     }
 
-    .landing-page h1 {
-        font-size: clamp(2.35rem, 9vw, 4rem) !important;
-        line-height: 1.04 !important;
+    h1 {
+        font-size: 2.25rem;
     }
 
-    .landing-page h2 {
-        font-size: clamp(1.8rem, 7vw, 2.75rem) !important;
-        line-height: 1.18 !important;
-    }
-
-    .landing-page .max-w-6xl,
-    .landing-page .max-w-4xl {
-        width: min(100%, 100%);
-    }
-
-    a[href*="register"],
-    a[href*="login"],
-    button {
-        min-height: 2.75rem;
-    }
-
-    footer .grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    h2 {
+        font-size: 1.875rem;
     }
 }
 
-@media (max-width: 424px) {
-    body {
-        font-size: 14px;
-    }
-
-    .landing-page h1 {
-        font-size: clamp(2rem, 8vw, 2.9rem) !important;
-    }
-
-    .landing-page h2 {
-        font-size: clamp(1.6rem, 7vw, 2.1rem) !important;
-    }
-
-    .bento-card {
-        padding: 1rem;
-    }
-}
-
-@media (max-width: 374px) {
-    nav .max-w-7xl {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-    }
-
-    body::before {
-        background-position: center 18%;
-    }
-
-    .bento-card {
-        padding: 0.9rem;
-    }
-}
-
+/* ---- Accessibility ------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
-    html {
-        scroll-behavior: auto;
-    }
-
     .reveal,
     .bento-card,
-    a,
-    button,
     nav,
-    .orb,
-    .hero-badge .dot,
-    .bg-clip-text.text-transparent {
+    .icon-badge {
         animation: none !important;
         transition: none !important;
     }
 }
 
-@media (max-width: 639px) {
-    .sm\:col-span-2 {
-        grid-column: span 1;
-    }
-
-    .grid-cols-1.sm\:grid-cols-2 {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 1024px) {
-    .landing-page .orb {
-        opacity: 0.28;
-        filter: blur(55px);
-    }
-}
-
+/* ---- Print Styles ------------------------------------------------------- */
 @media print {
     nav,
     footer {
